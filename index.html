@@ -1,135 +1,320 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ハッピーライフレインボー™ 診断</title>
-    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;500;700&display=swap');
-        body {
-            background-color: #fcfcfd;
-            font-family: 'Noto Sans JP', sans-serif;
-            color: #2d3748;
-        }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-        }
-        .rainbow-line {
-            height: 4px;
-            background: linear-gradient(to right, #FF7F7F, #FFBF7F, #facc15, #4ade80, #3b82f6, #8b5cf6);
-            border-radius: 2px;
-        }
-        .btn-gradient {
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .btn-gradient:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ハッピーライフレインボー™ 診断</title>
+  <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+
+    :root {
+      --mental: #f6a6c8;
+      --health: #ef8f8f;
+      --work: #f4d35e;
+      --money: #b9d86b;
+      --learning: #62b66e;
+      --hobby: #7ed6df;
+      --living: #5dade2;
+      --relationship: #a084dc;
+      --ink: #243042;
+      --muted: #6b7280;
+      --gold: #b9975b;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Noto Sans JP', sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(246,166,200,.22), transparent 28%),
+        radial-gradient(circle at top right, rgba(126,214,223,.22), transparent 28%),
+        linear-gradient(180deg, #fffdfa 0%, #fbfaf7 100%);
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.84);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,.7);
+      box-shadow: 0 22px 60px rgba(36,48,66,.10);
+    }
+
+    .rainbow-line {
+      height: 5px;
+      background: linear-gradient(to right,
+        var(--mental), var(--health), var(--work), var(--money),
+        var(--learning), var(--hobby), var(--living), var(--relationship));
+      border-radius: 999px;
+    }
+
+    .btn-gradient {
+      background: linear-gradient(135deg, #a084dc 0%, #7ed6df 100%);
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .btn-gradient:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 26px rgba(160,132,220,.26);
+    }
+
+    .soft-enter {
+      animation: softEnter .45s ease both;
+    }
+
+    @keyframes softEnter {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-6">
-    <div id="root" class="w-full max-w-lg"></div>
+<body class="min-h-screen flex items-center justify-center p-5">
+  <div id="root" class="w-full max-w-xl"></div>
 
-    <script type="text/babel">
-        function App() {
-            const [step, setStep] = React.useState('welcome');
-            const [qIdx, setQIdx] = React.useState(0);
-            const [scores, setScores] = React.useState({});
+  <script type="text/babel">
+    function App() {
+      const [step, setStep] = React.useState('welcome');
+      const [qIdx, setQIdx] = React.useState(0);
+      const [scores, setScores] = React.useState({});
 
-            const categories = [
-                { id: 'mental', name: 'MENTAL', color: '#FF7F7F', questions: ["本当は変わりたいのに、「自分には無理かもしれない」と感じることがある。", "うまくいかない理由を、自分の性格や過去のせいにしてしまうことがある。"] },
-                { id: 'health', name: 'HEALTH', color: '#FFBF7F', questions: ["自分の体調や疲れを後回しにして、無理を続けてしまうことがある。", "健康を整えたいと思っても、「忙しいから仕方ない」と諦めてしまう。"] },
-                { id: 'work', name: 'WORK', color: '#facc15', questions: ["今の仕事や役割に違和感があっても、「これが現実だから」と我慢している。", "自分の本当にやりたい仕事を考えると、現実的ではない気がしてしまう。"] },
-                { id: 'money', name: 'MONEY', color: '#4ade80', questions: ["お金を使うことに、どこか罪悪感や不安を感じることがある。", "自分がもっと豊かになっていい、とは心から思えないことがある。"] },
-                { id: 'learning', name: 'LEARNING', color: '#3b82f6', questions: ["学びたい気持ちはあるのに、「今さら遅い」と感じることがある。", "新しいことを始める前に、失敗や継続できない自分を想像して止まってしまう。"] },
-                { id: 'hobby', name: 'HOBBY', color: '#3b82f6', questions: ["好きなことをする時間に、どこか罪悪感を覚えることがある。", "趣味や楽しみは「余裕がある人のもの」だと思ってしまう。"] },
-                { id: 'living', name: 'LIVING', color: '#8b5cf6', questions: ["本当は暮らし方を変えたいのに、「今の環境では難しい」と思っている。", "自分が心地よく過ごすことより、日々をこなすことを優先している。"] },
-                { id: 'relationship', name: 'RELATIONSHIP', color: '#d946ef', questions: ["本音を言うと嫌われる、迷惑をかける、と思ってしまうことがある。", "人に頼るより、自分で抱え込んだ方が楽だと感じることがある。"] }
-            ];
-
-            const handleAnswer = (val) => {
-                const catId = categories[Math.floor(qIdx / 2)].id;
-                setScores(prev => ({ ...prev, [catId]: (prev[catId] || 0) + val }));
-                if (qIdx < 15) setQIdx(qIdx + 1);
-                else setStep('result');
-            };
-
-            if (step === 'welcome') return (
-                <div className="glass-card rounded-3xl p-10 text-center animate-fade-in">
-                    {/* ここにロゴ画像を表示 */}
-                    <img src="logo.png" alt="Happy Life Rainbow" className="h-20 mx-auto mb-8 object-contain" />
-                    
-                    <h1 className="text-2xl font-bold tracking-tight text-gray-800 mb-4">潜在意識バイアス診断</h1>
-                    <div className="rainbow-line mb-8 w-24 mx-auto"></div>
-                    <p className="text-gray-500 leading-relaxed mb-10 text-sm">
-                        あなたの心の奥底にある「ブレーキ」を可視化し、<br />
-                        本来の軽やかさを取り戻すための第一歩です。
-                    </p>
-                    <button onClick={() => setStep('quiz')} className="w-full py-4 btn-gradient text-white rounded-2xl font-bold tracking-widest">
-                        START
-                    </button>
-                </div>
-            );
-
-            if (step === 'quiz') {
-                const current = categories[Math.floor(qIdx / 2)];
-                return (
-                    <div className="glass-card rounded-3xl p-10 animate-fade-in">
-                        <div className="flex justify-between items-end mb-10">
-                            <div>
-                                <p className="text-[10px] font-bold tracking-[0.2em] text-gray-400 mb-1">CATEGORY</p>
-                                <p className="text-lg font-bold" style={{color: current.color}}>{current.name}</p>
-                            </div>
-                            <p className="text-xs font-medium text-gray-300">{qIdx + 1} / 16</p>
-                        </div>
-                        <h2 className="text-xl font-medium leading-relaxed text-gray-800 mb-12 min-h-[80px]">
-                            {current.questions[qIdx % 2]}
-                        </h2>
-                        <div className="grid gap-4">
-                            <button onClick={() => handleAnswer(1)} className="py-4 rounded-xl border border-gray-100 hover:border-indigo-400 hover:bg-indigo-50/50 transition-all font-medium text-gray-600 text-sm">
-                                はい
-                            </button>
-                            <button onClick={() => handleAnswer(0)} className="py-4 rounded-xl border border-gray-100 hover:border-indigo-400 hover:bg-indigo-50/50 transition-all font-medium text-gray-600 text-sm">
-                                いいえ
-                            </button>
-                        </div>
-                    </div>
-                );
-            }
-
-            if (step === 'result') return (
-                <div className="glass-card rounded-3xl p-10 animate-fade-in">
-                    <h2 className="text-xl font-bold text-center mb-2">Diagnosis Result</h2>
-                    <p className="text-xs text-center text-gray-400 mb-8 uppercase tracking-widest">診断結果</p>
-                    <div className="space-y-4 mb-10">
-                        {categories.map(cat => (
-                            <div key={cat.id} className="flex items-center justify-between p-4 bg-gray-50/50 rounded-2xl">
-                                <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">{cat.name}</span>
-                                <div className="flex gap-1">
-                                    {[0, 1].map(i => (
-                                        <div key={i} className={`w-8 h-2 rounded-full ${(scores[cat.id] || 0) > i ? 'opacity-100' : 'bg-gray-200'}`} style={{backgroundColor: (scores[cat.id] || 0) > i ? cat.color : ''}}></div>
-                                    ))}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                    <button onClick={() => window.location.reload()} className="w-full py-4 bg-gray-100 text-gray-500 rounded-2xl font-bold text-sm">
-                        RETRY
-                    </button>
-                </div>
-            );
+      const categories = [
+        {
+          id: 'mental', name: 'MENTAL', jp: 'メンタル', color: '#f6a6c8',
+          questions: [
+            '本当は変わりたいのに、「自分には無理かもしれない」と感じることがある。',
+            'うまくいかない理由を、自分の性格や過去のせいにしてしまうことがある。',
+            '人と比べて、自分には足りないものばかり見えてしまうことがある。',
+            '褒められても素直に受け取れず、「まだまだ」と思ってしまう。',
+            '本音よりも、周りからどう見られるかを優先してしまうことがある。'
+          ],
+          insight: '本当はもっと自由に、自分を信じて進みたい気持ちがありそうです。',
+          firstStep: '今日の問い：本当は、どんな自分を許してあげたいですか？'
+        },
+        {
+          id: 'health', name: 'HEALTH', jp: '健康', color: '#ef8f8f',
+          questions: [
+            '自分の体調や疲れを後回しにして、無理を続けてしまうことがある。',
+            '健康を整えたいと思っても、「忙しいから仕方ない」と諦めてしまう。',
+            '休むことに罪悪感があり、つい予定を詰め込んでしまう。',
+            '睡眠・食事・運動を整えたいと思いながら、後回しになりやすい。',
+            '体からの小さなサインに気づいても、まだ大丈夫だと思ってしまう。'
+          ],
+          insight: '心と身体が「もう少し大切にしてほしい」と静かに知らせてくれているかもしれません。',
+          firstStep: '今日の問い：5分だけ自分を休ませるなら、何をしますか？'
+        },
+        {
+          id: 'work', name: 'WORK', jp: '仕事', color: '#f4d35e',
+          questions: [
+            '今の仕事や役割に違和感があっても、「これが現実だから」と我慢している。',
+            '自分の本当にやりたい仕事を考えると、現実的ではない気がしてしまう。',
+            '仕事で評価されるために、自分らしさを抑えていると感じることがある。',
+            '本当は挑戦したいことがあっても、安定を手放すのが怖い。',
+            '自分の強みや価値が、仕事で十分に活かされていない気がする。'
+          ],
+          insight: '役割の奥に、まだ言葉になっていない「本当の貢献」が眠っていそうです。',
+          firstStep: '今日の問い：本当は、誰にどんな価値を届けたいですか？'
+        },
+        {
+          id: 'money', name: 'MONEY', jp: 'お金', color: '#b9d86b',
+          questions: [
+            'お金を使うことに、どこか罪悪感や不安を感じることがある。',
+            '自分がもっと豊かになっていい、とは心から思えないことがある。',
+            'お金の話をすることに、抵抗感や恥ずかしさがある。',
+            '欲しいものがあっても、「自分には贅沢かも」と思ってしまう。',
+            '収入や価格を上げることに、どこか申し訳なさを感じる。'
+          ],
+          insight: '豊かさを受け取ることへの遠慮や、安心したい気持ちが表れているかもしれません。',
+          firstStep: '今日の問い：安心して受け取りたい豊かさは何ですか？'
+        },
+        {
+          id: 'learning', name: 'LEARNING', jp: '学び', color: '#62b66e',
+          questions: [
+            '学びたい気持ちはあるのに、「今さら遅い」と感じることがある。',
+            '新しいことを始める前に、失敗や継続できない自分を想像して止まってしまう。',
+            '完璧に準備できるまで、始めない方がいいと思ってしまう。',
+            '学んでも結果につながらなかったらどうしよう、と不安になる。',
+            '自分より詳しい人を見ると、始める前から自信をなくしてしまう。'
+          ],
+          insight: '成長したい願望があるからこそ、失敗への不安も強く出ているようです。',
+          firstStep: '今日の問い：小さく試せる学びをひとつ選ぶなら何ですか？'
+        },
+        {
+          id: 'hobby', name: 'HOBBY', jp: '趣味', color: '#7ed6df',
+          questions: [
+            '好きなことをする時間に、どこか罪悪感を覚えることがある。',
+            '趣味や楽しみは「余裕がある人のもの」だと思ってしまう。',
+            '役に立つことや成果につながることを優先し、楽しみを後回しにしやすい。',
+            '自分が何を好きなのか、すぐに答えられないことがある。',
+            '楽しんでいる自分を、人に見せるのが少し恥ずかしい。'
+          ],
+          insight: '楽しむことは浪費ではなく、あなたの創造性と生命力を戻す入口です。',
+          firstStep: '今日の問い：理由なく「好き」と言えることは何ですか？'
+        },
+        {
+          id: 'living', name: 'LIVING', jp: '暮らし', color: '#5dade2',
+          questions: [
+            '本当は暮らし方を変えたいのに、「今の環境では難しい」と思っている。',
+            '自分が心地よく過ごすことより、日々をこなすことを優先している。',
+            '住まいや持ち物、時間の使い方に違和感があっても見ないふりをしている。',
+            '理想の暮らしを考えると、今の自分にはまだ遠いと感じる。',
+            '日常を整えることより、目の前の予定をこなすことが多い。'
+          ],
+          insight: '日常の心地よさを整えることが、未来の見え方を変える鍵になりそうです。',
+          firstStep: '今日の問い：部屋・時間・習慣の中で、ひとつ整えるなら何ですか？'
+        },
+        {
+          id: 'relationship', name: 'RELATIONSHIP', jp: '人間関係', color: '#a084dc',
+          questions: [
+            '本音を言うと嫌われる、迷惑をかける、と思ってしまうことがある。',
+            '人に頼るより、自分で抱え込んだ方が楽だと感じることがある。',
+            '相手に合わせすぎて、自分の気持ちが分からなくなることがある。',
+            '断ることやお願いすることに、強いハードルを感じる。',
+            '本当はもっと安心してつながりたいのに、距離を取ってしまうことがある。'
+          ],
+          insight: '本当は、もっと安心してつながれる関係性を望んでいるのかもしれません。',
+          firstStep: '今日の問い：誰に、どんな小さな本音を伝えたいですか？'
         }
+      ];
 
-        ReactDOM.render(<App />, document.getElementById('root'));
-    </script>
+      const questionsPerCategory = 5;
+      const totalQuestions = categories.length * questionsPerCategory;
+
+      const handleAnswer = (val) => {
+        const catId = categories[Math.floor(qIdx / questionsPerCategory)].id;
+        setScores(prev => ({ ...prev, [catId]: (prev[catId] || 0) + val }));
+        if (qIdx < totalQuestions - 1) setQIdx(qIdx + 1);
+        else setStep('result');
+      };
+
+      const getTopCategory = () => {
+        return categories
+          .map(cat => ({ ...cat, score: scores[cat.id] || 0 }))
+          .sort((a, b) => b.score - a.score)[0];
+      };
+
+      if (step === 'welcome') return (
+        <div className="glass-card rounded-[2rem] p-9 sm:p-11 text-center soft-enter">
+          <div className="mx-auto mb-7 h-20 w-20 rounded-full bg-white/80 shadow-sm flex items-center justify-center">
+            <span className="text-4xl">🌈</span>
+          </div>
+          <p className="text-[11px] font-bold tracking-[.25em] text-[#b9975b] mb-3">HAPPY LIFE RAINBOW™</p>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-800 mb-4">潜在意識バイアス診断</h1>
+          <div className="rainbow-line mb-8 w-28 mx-auto"></div>
+          <p className="text-gray-500 leading-relaxed mb-9 text-sm">
+            人生の8領域から、今の心のブレーキをやさしく見える化。<br />
+            自己理解で終わらせず、本当の願望への小さな扉を開きます。
+          </p>
+          <button onClick={() => setStep('quiz')} className="w-full py-4 btn-gradient text-white rounded-2xl font-bold tracking-widest">
+            診断をはじめる
+          </button>
+        </div>
+      );
+
+      if (step === 'quiz') {
+        const current = categories[Math.floor(qIdx / questionsPerCategory)];
+        const percent = Math.round(((qIdx + 1) / totalQuestions) * 100);
+
+        return (
+          <div className="glass-card rounded-[2rem] p-8 sm:p-10 soft-enter">
+            <div className="mb-8">
+              <div className="flex justify-between items-end mb-3">
+                <div>
+                  <p className="text-[10px] font-bold tracking-[.22em] text-gray-400 mb-1">CATEGORY</p>
+                  <p className="text-lg font-bold" style={{ color: current.color }}>{current.jp} / {current.name}</p>
+                </div>
+                <p className="text-xs font-medium text-gray-400">{qIdx + 1} / {totalQuestions}</p>
+              </div>
+              <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                <div className="h-full rounded-full" style={{ width: `${percent}%`, backgroundColor: current.color }}></div>
+              </div>
+            </div>
+
+            <h2 className="text-xl font-medium leading-relaxed text-gray-800 mb-10 min-h-[96px]">
+              {current.questions[qIdx % questionsPerCategory]}
+            </h2>
+
+            <div className="grid gap-4">
+              <button onClick={() => handleAnswer(1)} className="py-4 rounded-2xl bg-white/70 border border-gray-100 hover:border-purple-300 hover:bg-purple-50/60 transition-all font-medium text-gray-700 text-sm">
+                はい、当てはまる
+              </button>
+              <button onClick={() => handleAnswer(0)} className="py-4 rounded-2xl bg-white/70 border border-gray-100 hover:border-sky-300 hover:bg-sky-50/60 transition-all font-medium text-gray-700 text-sm">
+                いいえ、今は違う
+              </button>
+            </div>
+          </div>
+        );
+      }
+
+      if (step === 'result') {
+        const top = getTopCategory();
+
+        return (
+          <div className="glass-card rounded-[2rem] p-8 sm:p-10 soft-enter">
+            <p className="text-[11px] text-center font-bold tracking-[.25em] text-[#b9975b] mb-2">DIAGNOSIS RESULT</p>
+            <h2 className="text-2xl font-bold text-center mb-3">あなたの虹のメッセージ</h2>
+            <p className="text-sm text-center text-gray-500 leading-relaxed mb-8">
+              これは弱点ではなく、あなたの願望が眠っているサインです。
+            </p>
+
+            <div className="rounded-3xl p-6 mb-8 bg-white/75 border border-white shadow-sm">
+              <p className="text-xs font-bold tracking-[.18em] text-gray-400 mb-2">今、心のブレーキが出やすい領域</p>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-4 h-12 rounded-full" style={{ backgroundColor: top.color }}></div>
+                <div>
+                  <p className="text-2xl font-bold" style={{ color: top.color }}>{top.jp}</p>
+                  <p className="text-xs text-gray-400 tracking-widest">{top.name}</p>
+                </div>
+              </div>
+              <p className="text-gray-700 leading-relaxed text-sm mb-4">{top.insight}</p>
+              <div className="rounded-2xl bg-[#fff9ed] border border-[#eadcc2] p-4">
+                <p className="text-xs font-bold text-[#b9975b] mb-1">NEXT LITTLE STEP</p>
+                <p className="text-sm text-gray-700 leading-relaxed">{top.firstStep}</p>
+              </div>
+            </div>
+
+            <div className="space-y-3 mb-8">
+              {categories.map(cat => {
+                const score = scores[cat.id] || 0;
+                return (
+                  <div key={cat.id} className="flex items-center justify-between p-4 bg-white/60 rounded-2xl border border-white/70">
+                    <div>
+                      <span className="text-sm font-bold text-gray-600">{cat.jp}</span>
+                      <span className="ml-2 text-[10px] font-bold text-gray-300 tracking-wider">{cat.name}</span>
+                    </div>
+                    <div className="flex gap-1">
+                      {[0, 1, 2, 3, 4].map(i => (
+                        <div key={i} className="w-6 h-2 rounded-full" style={{ backgroundColor: score > i ? cat.color : '#e5e7eb' }}></div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="text-center mb-7">
+              <p className="text-sm leading-relaxed text-gray-500">
+                この結果をもとに、感情の奥にある価値観と<br className="hidden sm:block" />
+                本当の願望を一緒に読み解いていきます。
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <button onClick={() => window.location.reload()} className="py-4 bg-gray-100 text-gray-500 rounded-2xl font-bold text-sm">
+                もう一度診断
+              </button>
+              <button className="py-4 btn-gradient text-white rounded-2xl font-bold text-sm">
+                セッションへ進む
+              </button>
+            </div>
+          </div>
+        );
+      }
+    }
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
 </body>
 </html>
