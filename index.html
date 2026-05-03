@@ -22,7 +22,6 @@
       --living: #5dade2;
       --relation: #a084dc;
       --ink: #243042;
-      --muted: #6b7280;
       --gold: #b9975b;
     }
 
@@ -73,9 +72,30 @@
     }
 
     .logo-wrap {
-      background: rgba(255,255,255,.76);
-      border: 1px solid rgba(185,151,91,.18);
-      box-shadow: 0 14px 36px rgba(36,48,66,.08);
+      display: flex;
+      justify-content: center;
+      margin-bottom: 28px;
+    }
+
+    .fade-in-logo {
+      opacity: 0;
+      transform: translateY(10px) scale(0.95);
+      animation: logoFade 1.8s ease forwards;
+    }
+
+    @keyframes logoFade {
+      0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.9);
+      }
+      60% {
+        opacity: 0.7;
+        transform: translateY(-2px) scale(1.02);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
   </style>
 </head>
@@ -83,22 +103,146 @@
   <div id="root" class="w-full max-w-xl"></div>
 
   <script type="text/babel">
-    function Logo({ size = 'h-24' }) {
-      const [src, setSrc] = React.useState('rogo.pmg');
-      const [fallbackUsed, setFallbackUsed] = React.useState(false);
+    const COUNSELING_URL = '';
+    const QUESTIONS_PER_CATEGORY = 5;
+
+    const categories = [
+      {
+        id: 'mental', name: 'MENTAL', jp: 'メンタル', color: '#f6a6c8',
+        questions: [
+          '本当は変わりたいのに、「自分には無理かもしれない」と感じることがある。',
+          'うまくいかない理由を、自分の性格や過去のせいにしてしまうことがある。',
+          '人と比べて、自分には足りないものばかり見えてしまうことがある。',
+          '褒められても素直に受け取れず、「まだまだ」と思ってしまう。',
+          '本音よりも、周りからどう見られるかを優先してしまうことがある。'
+        ],
+        hook: 'あなたは「自分を信じる許可」が出た瞬間、人生の見え方が大きく変わるタイプです。',
+        insight: '本当はもっと自由に、自分を信じて進みたい気持ちがありそうです。',
+        firstStep: '今日の問い：本当は、どんな自分を許してあげたいですか？'
+      },
+      {
+        id: 'health', name: 'HEALTH', jp: '健康', color: '#ef8f8f',
+        questions: [
+          '自分の体調や疲れを後回しにして、無理を続けてしまうことがある。',
+          '健康を整えたいと思っても、「忙しいから仕方ない」と諦めてしまう。',
+          '休むことに罪悪感があり、つい予定を詰め込んでしまう。',
+          '睡眠・食事・運動を整えたいと思いながら、後回しになりやすい。',
+          '体からの小さなサインに気づいても、まだ大丈夫だと思ってしまう。'
+        ],
+        hook: 'あなたは「頑張る力」より先に「回復する許可」を取り戻すと、本来の輝きが戻りやすいタイプです。',
+        insight: '心と身体が「もう少し大切にしてほしい」と静かに知らせてくれているかもしれません。',
+        firstStep: '今日の問い：5分だけ自分を休ませるなら、何をしますか？'
+      },
+      {
+        id: 'work', name: 'WORK', jp: '仕事', color: '#f4d35e',
+        questions: [
+          '今の仕事や役割に違和感があっても、「これが現実だから」と我慢している。',
+          '自分の本当にやりたい仕事を考えると、現実的ではない気がしてしまう。',
+          '仕事で評価されるために、自分らしさを抑えていると感じることがある。',
+          '本当は挑戦したいことがあっても、安定を手放すのが怖い。',
+          '自分の強みや価値が、仕事で十分に活かされていない気がする。'
+        ],
+        hook: 'あなたは「何をするか」よりも先に、「誰にどんな価値を届けたいか」を言語化すると動き出すタイプです。',
+        insight: '役割の奥に、まだ言葉になっていない「本当の貢献」が眠っていそうです。',
+        firstStep: '今日の問い：本当は、誰にどんな価値を届けたいですか？'
+      },
+      {
+        id: 'money', name: 'MONEY', jp: 'お金', color: '#b9d86b',
+        questions: [
+          'お金を使うことに、どこか罪悪感や不安を感じることがある。',
+          '自分がもっと豊かになっていい、とは心から思えないことがある。',
+          'お金の話をすることに、抵抗感や恥ずかしさがある。',
+          '欲しいものがあっても、「自分には贅沢かも」と思ってしまう。',
+          '収入や価格を上げることに、どこか申し訳なさを感じる。'
+        ],
+        hook: 'あなたは「受け取っていい」と心から思えたとき、豊かさの流れが変わりやすいタイプです。',
+        insight: '豊かさを受け取ることへの遠慮や、安心したい気持ちが表れているかもしれません。',
+        firstStep: '今日の問い：安心して受け取りたい豊かさは何ですか？'
+      },
+      {
+        id: 'learning', name: 'LEARNING', jp: '学び', color: '#62b66e',
+        questions: [
+          '学びたい気持ちはあるのに、「今さら遅い」と感じることがある。',
+          '新しいことを始める前に、失敗や継続できない自分を想像して止まってしまう。',
+          '完璧に準備できるまで、始めない方がいいと思ってしまう。',
+          '学んでも結果につながらなかったらどうしよう、と不安になる。',
+          '自分より詳しい人を見ると、始める前から自信をなくしてしまう。'
+        ],
+        hook: 'あなたは「完璧に始める」より「小さく試す」ことで、未来の選択肢が広がるタイプです。',
+        insight: '成長したい願望があるからこそ、失敗への不安も強く出ているようです。',
+        firstStep: '今日の問い：小さく試せる学びをひとつ選ぶなら何ですか？'
+      },
+      {
+        id: 'hobby', name: 'HOBBY', jp: '趣味', color: '#7ed6df',
+        questions: [
+          '好きなことをする時間に、どこか罪悪感を覚えることがある。',
+          '趣味や楽しみは「余裕がある人のもの」だと思ってしまう。',
+          '役に立つことや成果につながることを優先し、楽しみを後回しにしやすい。',
+          '自分が何を好きなのか、すぐに答えられないことがある。',
+          '楽しんでいる自分を、人に見せるのが少し恥ずかしい。'
+        ],
+        hook: 'あなたは「楽しむこと」を許した瞬間、創造性と行動力が戻ってくるタイプです。',
+        insight: '楽しむことは浪費ではなく、あなたの創造性と生命力を戻す入口です。',
+        firstStep: '今日の問い：理由なく「好き」と言えることは何ですか？'
+      },
+      {
+        id: 'living', name: 'LIVING', jp: '暮らし', color: '#5dade2',
+        questions: [
+          '本当は暮らし方を変えたいのに、「今の環境では難しい」と思っている。',
+          '自分が心地よく過ごすことより、日々をこなすことを優先している。',
+          '住まいや持ち物、時間の使い方に違和感があっても見ないふりをしている。',
+          '理想の暮らしを考えると、今の自分にはまだ遠いと感じる。',
+          '日常を整えることより、目の前の予定をこなすことが多い。'
+        ],
+        hook: 'あなたは日常の小さな違和感を整えるほど、未来のビジョンが見えやすくなるタイプです。',
+        insight: '日常の心地よさを整えることが、未来の見え方を変える鍵になりそうです。',
+        firstStep: '今日の問い：部屋・時間・習慣の中で、ひとつ整えるなら何ですか？'
+      },
+      {
+        id: 'relation', name: 'RELATIONSHIP', jp: '人間関係', color: '#a084dc',
+        questions: [
+          '本音を言うと嫌われる、迷惑をかける、と思ってしまうことがある。',
+          '人に頼るより、自分で抱え込んだ方が楽だと感じることがある。',
+          '相手に合わせすぎて、自分の気持ちが分からなくなることがある。',
+          '断ることやお願いすることに、強いハードルを感じる。',
+          '本当はもっと安心してつながりたいのに、距離を取ってしまうことがある。'
+        ],
+        hook: 'あなたは「ひとりで抱えなくていい」と感じられたとき、本当の強さが開いていくタイプです。',
+        insight: '本当は、もっと安心してつながれる関係性を望んでいるのかもしれません。',
+        firstStep: '今日の問い：誰に、どんな小さな本音を伝えたいですか？'
+      }
+    ];
+
+    function runTests() {
+      console.assert(categories.length === 8, '8カテゴリーである必要があります');
+      console.assert(categories.every(function(cat) { return cat.questions.length === QUESTIONS_PER_CATEGORY; }), '各カテゴリーは5問である必要があります');
+      console.assert(categories.length * QUESTIONS_PER_CATEGORY === 40, '合計40問である必要があります');
+      console.assert(getTopCategoryForTest({ mental: 3, work: 5, money: 1 }).id === 'work', '最高スコアのカテゴリーが選ばれる必要があります');
+      console.assert(getTopCategoryForTest({}).id === 'mental', '未回答時は先頭カテゴリーを返します');
+    }
+
+    function getTopCategoryForTest(scores) {
+      return categories
+        .map(function(cat) { return Object.assign({}, cat, { score: scores[cat.id] || 0 }); })
+        .sort(function(a, b) { return b.score - a.score; })[0];
+    }
+
+    function Logo(props) {
+      const size = props.size || 'h-24';
+      const candidates = ['rogo.pmg', 'rogo.png', 'logo.png'];
+      const [index, setIndex] = React.useState(0);
+
+      function handleError() {
+        if (index < candidates.length - 1) setIndex(index + 1);
+      }
 
       return (
-        <div className="logo-wrap mx-auto mb-7 rounded-[1.75rem] px-6 py-5 w-fit">
+        <div className="logo-wrap">
           <img
-            src={src}
+            src={candidates[index]}
             alt="Happy Life Rainbow"
-            className={`${size} mx-auto object-contain`}
-            onError={() => {
-              if (!fallbackUsed) {
-                setFallbackUsed(true);
-                setSrc('logo.png');
-              }
-            }}
+            className={size + ' fade-in-logo object-contain'}
+            onError={handleError}
           />
         </div>
       );
@@ -108,138 +252,55 @@
       const [step, setStep] = React.useState('welcome');
       const [qIdx, setQIdx] = React.useState(0);
       const [scores, setScores] = React.useState({});
-      const questionsPerCategory = 5;
+      const totalQuestions = categories.length * QUESTIONS_PER_CATEGORY;
 
-      const categories = [
-        {
-          id: 'mental', name: 'MENTAL', jp: 'メンタル', color: '#f6a6c8',
-          questions: [
-            '本当は変わりたいのに、「自分には無理かもしれない」と感じることがある。',
-            'うまくいかない理由を、自分の性格や過去のせいにしてしまうことがある。',
-            '人と比べて、自分には足りないものばかり見えてしまうことがある。',
-            '褒められても素直に受け取れず、「まだまだ」と思ってしまう。',
-            '本音よりも、周りからどう見られるかを優先してしまうことがある。'
-          ],
-          insight: '本当はもっと自由に、自分を信じて進みたい気持ちがありそうです。',
-          firstStep: '今日の問い：本当は、どんな自分を許してあげたいですか？'
-        },
-        {
-          id: 'health', name: 'HEALTH', jp: '健康', color: '#ef8f8f',
-          questions: [
-            '自分の体調や疲れを後回しにして、無理を続けてしまうことがある。',
-            '健康を整えたいと思っても、「忙しいから仕方ない」と諦めてしまう。',
-            '休むことに罪悪感があり、つい予定を詰め込んでしまう。',
-            '睡眠・食事・運動を整えたいと思いながら、後回しになりやすい。',
-            '体からの小さなサインに気づいても、まだ大丈夫だと思ってしまう。'
-          ],
-          insight: '心と身体が「もう少し大切にしてほしい」と静かに知らせてくれているかもしれません。',
-          firstStep: '今日の問い：5分だけ自分を休ませるなら、何をしますか？'
-        },
-        {
-          id: 'work', name: 'WORK', jp: '仕事', color: '#f4d35e',
-          questions: [
-            '今の仕事や役割に違和感があっても、「これが現実だから」と我慢している。',
-            '自分の本当にやりたい仕事を考えると、現実的ではない気がしてしまう。',
-            '仕事で評価されるために、自分らしさを抑えていると感じることがある。',
-            '本当は挑戦したいことがあっても、安定を手放すのが怖い。',
-            '自分の強みや価値が、仕事で十分に活かされていない気がする。'
-          ],
-          insight: '役割の奥に、まだ言葉になっていない「本当の貢献」が眠っていそうです。',
-          firstStep: '今日の問い：本当は、誰にどんな価値を届けたいですか？'
-        },
-        {
-          id: 'money', name: 'MONEY', jp: 'お金', color: '#b9d86b',
-          questions: [
-            'お金を使うことに、どこか罪悪感や不安を感じることがある。',
-            '自分がもっと豊かになっていい、とは心から思えないことがある。',
-            'お金の話をすることに、抵抗感や恥ずかしさがある。',
-            '欲しいものがあっても、「自分には贅沢かも」と思ってしまう。',
-            '収入や価格を上げることに、どこか申し訳なさを感じる。'
-          ],
-          insight: '豊かさを受け取ることへの遠慮や、安心したい気持ちが表れているかもしれません。',
-          firstStep: '今日の問い：安心して受け取りたい豊かさは何ですか？'
-        },
-        {
-          id: 'learning', name: 'LEARNING', jp: '学び', color: '#62b66e',
-          questions: [
-            '学びたい気持ちはあるのに、「今さら遅い」と感じることがある。',
-            '新しいことを始める前に、失敗や継続できない自分を想像して止まってしまう。',
-            '完璧に準備できるまで、始めない方がいいと思ってしまう。',
-            '学んでも結果につながらなかったらどうしよう、と不安になる。',
-            '自分より詳しい人を見ると、始める前から自信をなくしてしまう。'
-          ],
-          insight: '成長したい願望があるからこそ、失敗への不安も強く出ているようです。',
-          firstStep: '今日の問い：小さく試せる学びをひとつ選ぶなら何ですか？'
-        },
-        {
-          id: 'hobby', name: 'HOBBY', jp: '趣味', color: '#7ed6df',
-          questions: [
-            '好きなことをする時間に、どこか罪悪感を覚えることがある。',
-            '趣味や楽しみは「余裕がある人のもの」だと思ってしまう。',
-            '役に立つことや成果につながることを優先し、楽しみを後回しにしやすい。',
-            '自分が何を好きなのか、すぐに答えられないことがある。',
-            '楽しんでいる自分を、人に見せるのが少し恥ずかしい。'
-          ],
-          insight: '楽しむことは浪費ではなく、あなたの創造性と生命力を戻す入口です。',
-          firstStep: '今日の問い：理由なく「好き」と言えることは何ですか？'
-        },
-        {
-          id: 'living', name: 'LIVING', jp: '暮らし', color: '#5dade2',
-          questions: [
-            '本当は暮らし方を変えたいのに、「今の環境では難しい」と思っている。',
-            '自分が心地よく過ごすことより、日々をこなすことを優先している。',
-            '住まいや持ち物、時間の使い方に違和感があっても見ないふりをしている。',
-            '理想の暮らしを考えると、今の自分にはまだ遠いと感じる。',
-            '日常を整えることより、目の前の予定をこなすことが多い。'
-          ],
-          insight: '日常の心地よさを整えることが、未来の見え方を変える鍵になりそうです。',
-          firstStep: '今日の問い：部屋・時間・習慣の中で、ひとつ整えるなら何ですか？'
-        },
-        {
-          id: 'relation', name: 'RELATIONSHIP', jp: '人間関係', color: '#a084dc',
-          questions: [
-            '本音を言うと嫌われる、迷惑をかける、と思ってしまうことがある。',
-            '人に頼るより、自分で抱え込んだ方が楽だと感じることがある。',
-            '相手に合わせすぎて、自分の気持ちが分からなくなることがある。',
-            '断ることやお願いすることに、強いハードルを感じる。',
-            '本当はもっと安心してつながりたいのに、距離を取ってしまうことがある。'
-          ],
-          insight: '本当は、もっと安心してつながれる関係性を望んでいるのかもしれません。',
-          firstStep: '今日の問い：誰に、どんな小さな本音を伝えたいですか？'
+      function handleAnswer(value) {
+        const currentCategory = categories[Math.floor(qIdx / QUESTIONS_PER_CATEGORY)];
+        const nextScores = Object.assign({}, scores, {
+          [currentCategory.id]: (scores[currentCategory.id] || 0) + value
+        });
+
+        setScores(nextScores);
+
+        if (qIdx < totalQuestions - 1) {
+          setQIdx(qIdx + 1);
+        } else {
+          setStep('result');
         }
-      ];
+      }
 
-      const totalQuestions = categories.length * questionsPerCategory;
+      function getTopCategory() {
+        return getTopCategoryForTest(scores);
+      }
 
-      const handleAnswer = (val) => {
-        const catId = categories[Math.floor(qIdx / questionsPerCategory)].id;
-        setScores(prev => ({ ...prev, [catId]: (prev[catId] || 0) + val }));
-        if (qIdx < totalQuestions - 1) setQIdx(qIdx + 1);
-        else setStep('result');
-      };
+      function goToCounseling() {
+        if (COUNSELING_URL) {
+          window.location.href = COUNSELING_URL;
+        } else {
+          alert('無料カウンセリングへ進みます。ここにLINEや予約リンクを接続できます。');
+        }
+      }
 
-      const getTopCategory = () => categories
-        .map(cat => ({ ...cat, score: scores[cat.id] || 0 }))
-        .sort((a, b) => b.score - a.score)[0];
-
-      if (step === 'welcome') return (
-        <div className="glass-card rounded-[2rem] p-9 sm:p-11 text-center soft-enter">
-          <Logo size="h-24 sm:h-28" />
-          <p className="text-[11px] font-bold tracking-[.25em] text-[#b9975b] mb-3">HAPPY LIFE RAINBOW™</p>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-800 mb-4">潜在意識バイアス診断</h1>
-          <div className="rainbow-line mb-8 w-32 mx-auto"></div>
-          <p className="text-gray-500 leading-relaxed mb-9 text-sm">
-            人生の8領域から、今の心のブレーキをやさしく見える化。<br />
-            自己理解で終わらせず、本当の願望への小さな扉を開きます。
-          </p>
-          <button onClick={() => setStep('quiz')} className="w-full py-4 btn-gradient text-white rounded-2xl font-bold tracking-widest">
-            診断をはじめる
-          </button>
-        </div>
-      );
+      if (step === 'welcome') {
+        return (
+          <div className="glass-card rounded-[2rem] p-9 sm:p-11 text-center soft-enter">
+            <Logo size="h-24 sm:h-28" />
+            <p className="text-[11px] font-bold tracking-[.25em] text-[#b9975b] mb-3">HAPPY LIFE RAINBOW™</p>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-800 mb-4">潜在意識バイアス診断</h1>
+            <div className="rainbow-line mb-8 w-32 mx-auto"></div>
+            <p className="text-gray-500 leading-relaxed mb-9 text-sm">
+              人生の8領域から、今の心のブレーキをやさしく見える化。<br />
+              自己理解で終わらせず、本当の願望への小さな扉を開きます。
+            </p>
+            <button onClick={function() { setStep('quiz'); }} className="w-full py-4 btn-gradient text-white rounded-2xl font-bold tracking-widest">
+              診断をはじめる
+            </button>
+          </div>
+        );
+      }
 
       if (step === 'quiz') {
-        const current = categories[Math.floor(qIdx / questionsPerCategory)];
+        const current = categories[Math.floor(qIdx / QUESTIONS_PER_CATEGORY)];
         const percent = Math.round(((qIdx + 1) / totalQuestions) * 100);
 
         return (
@@ -253,19 +314,19 @@
                 <p className="text-xs font-medium text-gray-400">{qIdx + 1} / {totalQuestions}</p>
               </div>
               <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div className="h-full rounded-full" style={{ width: `${percent}%`, backgroundColor: current.color }}></div>
+                <div className="h-full rounded-full" style={{ width: percent + '%', backgroundColor: current.color }}></div>
               </div>
             </div>
 
             <h2 className="text-xl font-medium leading-relaxed text-gray-800 mb-10 min-h-[96px]">
-              {current.questions[qIdx % questionsPerCategory]}
+              {current.questions[qIdx % QUESTIONS_PER_CATEGORY]}
             </h2>
 
             <div className="grid gap-4">
-              <button onClick={() => handleAnswer(1)} className="py-4 rounded-2xl bg-white/70 border border-gray-100 hover:border-purple-300 hover:bg-purple-50/60 transition-all font-medium text-gray-700 text-sm">
+              <button onClick={function() { handleAnswer(1); }} className="py-4 rounded-2xl bg-white/70 border border-gray-100 hover:border-purple-300 hover:bg-purple-50/60 transition-all font-medium text-gray-700 text-sm">
                 はい、当てはまる
               </button>
-              <button onClick={() => handleAnswer(0)} className="py-4 rounded-2xl bg-white/70 border border-gray-100 hover:border-sky-300 hover:bg-sky-50/60 transition-all font-medium text-gray-700 text-sm">
+              <button onClick={function() { handleAnswer(0); }} className="py-4 rounded-2xl bg-white/70 border border-gray-100 hover:border-sky-300 hover:bg-sky-50/60 transition-all font-medium text-gray-700 text-sm">
                 いいえ、今は違う
               </button>
             </div>
@@ -282,7 +343,8 @@
             <p className="text-[11px] text-center font-bold tracking-[.25em] text-[#b9975b] mb-2">DIAGNOSIS RESULT</p>
             <h2 className="text-2xl font-bold text-center mb-3">あなたの虹のメッセージ</h2>
             <p className="text-sm text-center text-gray-500 leading-relaxed mb-8">
-              これは弱点ではなく、あなたの願望が眠っているサインです。
+              これは弱点ではありません。<br />
+              あなたの人生が動き出そうとしている“サイン”です。
             </p>
 
             <div className="rounded-3xl p-6 mb-8 bg-white/75 border border-white shadow-sm">
@@ -294,15 +356,20 @@
                   <p className="text-xs text-gray-400 tracking-widest">{top.name}</p>
                 </div>
               </div>
-              <p className="text-gray-700 leading-relaxed text-sm mb-4">{top.insight}</p>
+              <p className="text-gray-700 leading-relaxed text-sm mb-3 font-semibold">
+                {top.hook}
+              </p>
+              <p className="text-gray-600 leading-relaxed text-sm mb-4">
+                {top.insight}
+              </p>
               <div className="rounded-2xl bg-[#fff9ed] border border-[#eadcc2] p-4">
-                <p className="text-xs font-bold text-[#b9975b] mb-1">NEXT LITTLE STEP</p>
+                <p className="text-xs font-bold text-[#b9975b] mb-1">あなたの次の一歩</p>
                 <p className="text-sm text-gray-700 leading-relaxed">{top.firstStep}</p>
               </div>
             </div>
 
             <div className="space-y-3 mb-8">
-              {categories.map(cat => {
+              {categories.map(function(cat) {
                 const score = scores[cat.id] || 0;
                 return (
                   <div key={cat.id} className="flex items-center justify-between p-4 bg-white/60 rounded-2xl border border-white/70">
@@ -311,28 +378,36 @@
                       <span className="ml-2 text-[10px] font-bold text-gray-300 tracking-wider">{cat.name}</span>
                     </div>
                     <div className="flex gap-1">
-                      {[0, 1, 2, 3, 4].map(i => (
-                        <div key={i} className="w-6 h-2 rounded-full" style={{ backgroundColor: score > i ? cat.color : '#e5e7eb' }}></div>
-                      ))}
+                      {[0, 1, 2, 3, 4].map(function(i) {
+                        return <div key={i} className="w-6 h-2 rounded-full" style={{ backgroundColor: score > i ? cat.color : '#e5e7eb' }}></div>;
+                      })}
                     </div>
                   </div>
                 );
               })}
             </div>
 
+            <div className="rounded-3xl p-5 mb-5 bg-white/65 border border-white/70 text-center">
+              <p className="text-sm font-bold text-gray-700 mb-2">あなたの本当の願望を、一緒に言語化します。</p>
+              <p className="text-xs text-gray-500 leading-relaxed">診断結果をもとに、無料カウンセリングで心のブレーキと次の一歩をやさしく読み解きます。</p>
+            </div>
+
             <div className="grid grid-cols-2 gap-3">
-              <button onClick={() => window.location.reload()} className="py-4 bg-gray-100 text-gray-500 rounded-2xl font-bold text-sm">
+              <button onClick={function() { window.location.reload(); }} className="py-4 bg-gray-100 text-gray-500 rounded-2xl font-bold text-sm">
                 もう一度診断
               </button>
-              <button className="py-4 btn-gradient text-white rounded-2xl font-bold text-sm">
-                セッションへ進む
+              <button onClick={goToCounseling} className="py-4 btn-gradient text-white rounded-2xl font-bold text-sm">
+                無料カウンセリングへ進む
               </button>
             </div>
           </div>
         );
       }
+
+      return null;
     }
 
+    runTests();
     ReactDOM.render(<App />, document.getElementById('root'));
   </script>
 </body>
