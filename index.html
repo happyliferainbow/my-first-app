@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ハッピーライフレインボー™ 潜在意識バイアス診断</title>
+  <style>
+    :root {
+      --mental: #f7a7c8;
+      --health: #f26b6b;
+      --work: #f6d65b;
+      --money: #b9df5a;
+      --learning: #6fd38b;
+      --hobby: #76d7ea;
+      --life: #6fa8dc;
+      --relationship: #b28ee8;
+      --text: #2f2f3a;
+      --muted: #666;
+      --bg: #fbf8f3;
+      --card: #ffffff;
+      --line: #eee6dc;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+      background: linear-gradient(135deg, #fffaf2 0%, #f7fbff 100%);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 18px 64px;
+    }
+
+    .hero {
+      background: rgba(255,255,255,0.82);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 36px 26px;
+      box-shadow: 0 18px 50px rgba(90, 70, 45, 0.08);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: -80px -80px auto auto;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 180deg,
+        var(--mental),
+        var(--health),
+        var(--work),
+        var(--money),
+        var(--learning),
+        var(--hobby),
+        var(--life),
+        var(--relationship),
+        var(--mental)
+      );
+      opacity: 0.18;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: #fff7de;
+      color: #8a6b18;
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      margin: 8px 0 10px;
+      font-size: clamp(26px, 4vw, 42px);
+      line-height: 1.25;
+      letter-spacing: 0.02em;
+    }
+
+    .lead {
+      max-width: 720px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .notice {
+      margin-top: 18px;
+      font-size: 14px;
+      color: #777;
+    }
+
+    .questions {
+      margin-top: 28px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .category-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: 0 12px 32px rgba(70, 60, 45, 0.06);
+    }
+
+    .category-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: inline-block;
+      box-shadow: 0 0 0 5px rgba(0,0,0,0.03);
+    }
+
+    .question {
+      padding: 16px;
+      border-radius: 18px;
+      background: #fffdf9;
+      border: 1px solid #f1eadf;
+      margin-bottom: 12px;
+    }
+
+    .question p {
+      margin: 0 0 12px;
+      font-weight: 700;
+    }
+
+    .choices {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    label.choice {
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      border: 1px solid #ddd;
+      background: white;
+      transition: 0.2s;
+      font-weight: 700;
+    }
+
+    label.choice:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+    }
+
+    input[type="radio"] {
+      accent-color: #7f6ad8;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 28px 0;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 14px 24px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .primary {
+      background: linear-gradient(135deg, #6f8df7, #b28ee8);
+      color: white;
+      box-shadow: 0 12px 28px rgba(111, 141, 247, 0.28);
+    }
+
+    .secondary {
+      background: #fff;
+      color: #555;
+      border: 1px solid #ddd;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+    }
+
+    .result {
+      display: none;
+      margin-top: 28px;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 26px;
+      box-shadow: 0 18px 50px rgba(90, 70, 45, 0.08);
+    }
+
+    .result h2 {
+      margin-top: 0;
+      font-size: 28px;
+    }
+
+    .summary-box {
+      padding: 18px;
+      border-radius: 20px;
+      background: #fffaf0;
+      border: 1px solid #f1dfb8;
+      margin-bottom: 22px;
+    }
+
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .score-card {
+      padding: 16px;
+      border-radius: 20px;
+      background: #fff;
+      border: 1px solid #eee;
+    }
+
+    .score-card h3 {
+      margin: 0 0 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 18px;
+    }
+
+    .score {
+      font-size: 24px;
+      font-weight: 900;
+      margin: 8px 0;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #f6f6f6;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .detail {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .top3 {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+    }
+
+    .top-item {
+      padding: 16px;
+      border-radius: 18px;
+      background: #f9fbff;
+      border: 1px solid #e5ecff;
+      margin-bottom: 12px;
+    }
+
+    .steps {
+      margin-top: 28px;
+      padding: 20px;
+      border-radius: 22px;
+      background: #f7fff8;
+      border: 1px solid #ddefdf;
+    }
+
+    .steps li {
+      margin-bottom: 8px;
+    }
+
+    .footer-message {
+      margin-top: 26px;
+      padding: 18px;
+      border-radius: 20px;
+      background: #fff;
+      border: 1px solid var(--line);
+      color: #555;
+    }
+
+    .error {
+      display: none;
+      text-align: center;
+      color: #b54848;
+      font-weight: 800;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px 12px 48px;
+      }
+
+      .hero, .result, .category-card {
+        border-radius: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="hero">
+      <div class="badge">簡易セルフ診断</div>
+      <h1>ハッピーライフレインボー™<br>潜在意識バイアス診断</h1>
+      <p class="lead">
+        8つのカテゴリーから、今のあなたがどこで無意識にブレーキを踏んでいるのかを見つけるための簡易診断です。
+        YES / NOで直感的に答えてください。
+      </p>
+      <p class="notice">※医療・心理診断ではありません。自己理解のためのワークとしてご利用ください。</p>
+    </section>
+
+    <section class="questions" id="questions"></section>
+
+    <div class="actions">
+      <button class="primary" onclick="calculateResult()">診断結果を見る</button>
+      <button class="secondary" onclick="resetForm()">リセット</button>
+    </div>
+    <div class="error" id="error">未回答の質問があります。すべての質問に回答してください。</div>
+
+    <section class="result" id="result">
+      <h2>診断結果</h2>
+      <div class="summary-box" id="summary"></div>
+      <div class="score-grid" id="scoreGrid"></div>
+
+      <div class="top3">
+        <h2>優先して整えたいTOP3</h2>
+        <div id="top3"></div>
+      </div>
+
+      <div class="steps">
+        <h2>今日からできるベビーステップ</h2>
+        <ol>
+          <li>一番スコアが高かったカテゴリーについて「本当はどうしたい？」と1行だけ書く。</li>
+          <li>そのカテゴリーで、今週できる小さな行動を1つだけ決める。</li>
+          <li>できなかった理由ではなく、少しでもできたことを記録する。</li>
+        </ol>
+      </div>
+
+      <div class="footer-message">
+        あなたの答えは、良い・悪いを判定するものではありません。これは、今のあなたがどこで無意識にブレーキを踏んでいるのかを見つけるための小さな地図です。ハッピーライフレインボー™は、「変わらなきゃ」と自分を責めるためではなく、「どこを整えれば、自然に前へ進めるのか」を見つけるためのツールです。
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const categories = [
+      {
+        key: "mental",
+        name: "メンタル",
+        colorName: "ピンク",
+        color: "var(--mental)",
+        questions: [
+          "本当は変わりたいのに、『自分には無理かもしれない』と感じることがある。",
+          "うまくいかない理由を、自分の性格や過去のせいにしてしまうことがある。"
+        ],
+        wall: "自己否定や過去への固定化が、行動前のブレーキになっている可能性があります。",
+        bias: "自己効力感の低下、過去基準バイアス",
+        feedback: "まずは『できるか』よりも『小さく試せるか』に意識を向けてみましょう。"
+      },
+      {
+        key: "health",
+        name: "健康",
+        colorName: "赤",
+        color: "var(--health)",
+        questions: [
+          "自分の体調や疲れを後回しにして、無理を続けてしまうことがある。",
+          "健康を整えたいと思っても、『忙しいから仕方ない』と諦めてしまう。"
+        ],
+        wall: "自分の身体の声よりも、役割や義務を優先しすぎているかもしれません。",
+        bias: "正常性バイアス、先送りバイアス",
+        feedback: "健康は未来への土台です。小さな休息も立派な自己投資です。"
+      },
+      {
+        key: "work",
+        name: "仕事",
+        colorName: "黄色",
+        color: "var(--work)",
+        questions: [
+          "今の仕事や役割に違和感があっても、『これが現実だから』と我慢している。",
+          "自分の本当にやりたい仕事を考えると、現実的ではない気がしてしまう。"
+        ],
+        wall: "現実適応を優先するあまり、自分の可能性を小さく見積もっている可能性があります。",
+        bias: "現状維持バイアス、損失回避バイアス",
+        feedback: "いきなり変える必要はありません。まずは違和感を言葉にすることから始まります。"
+      },
+      {
+        key: "money",
+        name: "お金",
+        colorName: "黄緑",
+        color: "var(--money)",
+        questions: [
+          "お金を使うことに、どこか罪悪感や不安を感じることがある。",
+          "自分がもっと豊かになっていい、とは心から思えないことがある。"
+        ],
+        wall: "お金に対する罪悪感や不安が、受け取る力や自己投資を止めているかもしれません。",
+        bias: "欠乏バイアス、罪悪感ビリーフ",
+        feedback: "お金は怖いものではなく、価値を循環させる道具として見直してみましょう。"
+      },
+      {
+        key: "learning",
+        name: "学び",
+        colorName: "緑",
+        color: "var(--learning)",
+        questions: [
+          "学びたい気持ちはあるのに、『今さら遅い』と感じることがある。",
+          "新しいことを始める前に、失敗や継続できない自分を想像して止まってしまう。"
+        ],
+        wall: "年齢や過去の失敗を理由に、新しい成長の入り口で止まっている可能性があります。",
+        bias: "固定マインドセット、失敗予測バイアス",
+        feedback: "学びは一気に変わるためではなく、昨日の自分を少し超えるためにあります。"
+      },
+      {
+        key: "hobby",
+        name: "趣味",
+        colorName: "水色",
+        color: "var(--hobby)",
+        questions: [
+          "好きなことをする時間に、どこか罪悪感を覚えることがある。",
+          "趣味や楽しみは『余裕がある人のもの』だと思ってしまう。"
+        ],
+        wall: "楽しむことへの許可が出せず、心の回復や創造性が後回しになっているかもしれません。",
+        bias: "べき思考、快楽への罪悪感",
+        feedback: "楽しみはご褒美ではなく、人生のエネルギーを回復させる大切な栄養です。"
+      },
+      {
+        key: "life",
+        name: "暮らし",
+        colorName: "青",
+        color: "var(--life)",
+        questions: [
+          "本当は暮らし方を変えたいのに、『今の環境では難しい』と思っている。",
+          "自分が心地よく過ごすことより、日々をこなすことを優先している。"
+        ],
+        wall: "環境を変えられないという思い込みが、日常の心地よさを制限している可能性があります。",
+        bias: "環境固定バイアス、諦め思考",
+        feedback: "暮らしは大きく変えなくても、小さな心地よさを増やすだけで流れが変わります。"
+      },
+      {
+        key: "relationship",
+        name: "人間関係",
+        colorName: "紫",
+        color: "var(--relationship)",
+        questions: [
+          "本音を言うと嫌われる、迷惑をかける、と思ってしまうことがある。",
+          "人に頼るより、自分で抱え込んだ方が楽だと感じることがある。"
+        ],
+        wall: "本音や依頼を抑えることで、人とのつながりに見えない距離が生まれているかもしれません。",
+        bias: "拒絶予測バイアス、過剰責任思考",
+        feedback: "頼ることは弱さではなく、信頼関係を育てるための行動でもあります。"
+      }
+    ];
+
+    function renderQuestions() {
+      const wrapper = document.getElementById("questions");
+      wrapper.innerHTML = "";
+
+      categories.forEach((cat, catIndex) => {
+        const card = document.createElement("div");
+        card.className = "category-card";
+        card.innerHTML = `
+          <div class="category-title">
+            <span class="dot" style="background:${cat.color}"></span>
+            ${catIndex + 1}. ${cat.name}｜${cat.colorName}
+          </div>
+        `;
+
+        cat.questions.forEach((q, qIndex) => {
+          const globalIndex = catIndex * 2 + qIndex + 1;
+          const question = document.createElement("div");
+          question.className = "question";
+          question.innerHTML = `
+            <p>Q${globalIndex}. ${q}</p>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="${cat.key}_${qIndex}" value="1"> YES</label>
+              <label class="choice"><input type="radio" name="${cat.key}_${qIndex}" value="0"> NO</label>
+            </div>
+          `;
+          card.appendChild(question);
+        });
+
+        wrapper.appendChild(card);
+      });
+    }
+
+    function getStatus(score) {
+      if (score === 0) return "制限ほぼなし";
+      if (score === 1) return "軽いバイアスあり";
+      return "強い制限あり";
+    }
+
+    function getSummary(total) {
+      if (total <= 4) {
+        return "全体的には大きな制限は少なく、比較的自然体で人生の各領域を扱えている状態です。ただし、スコアが高かったカテゴリーには、次の成長のヒントが隠れている可能性があります。";
+      }
+      if (total <= 9) {
+        return "いくつかのカテゴリーで、無意識の思い込みや小さなブレーキが見えています。これは悪いことではなく、今の自分をより深く理解する入口です。優先順位を決めて整えることで、行動しやすくなります。";
+      }
+      return "複数のカテゴリーで、潜在意識の壁や認知バイアスが働いている可能性があります。今は頑張りが足りないのではなく、心の中の前提を見直すタイミングかもしれません。小さく整えることから始めましょう。";
+    }
+
+    function calculateResult() {
+      const error = document.getElementById("error");
+      const results = [];
+      let total = 0;
+
+      for (const cat of categories) {
+        let score = 0;
+        for (let i = 0; i < 2; i++) {
+          const selected = document.querySelector(`input[name="${cat.key}_${i}"]:checked`);
+          if (!selected) {
+            error.style.display = "block";
+            document.getElementById("result").style.display = "none";
+            return;
+          }
+          score += Number(selected.value);
+        }
+        total += score;
+        results.push({ ...cat, score });
+      }
+
+      error.style.display = "none";
+      renderResult(results, total);
+    }
+
+    function renderResult(results, total) {
+      document.getElementById("summary").innerHTML = `<strong>総合スコア：${total}点 / 16点</strong><br>${getSummary(total)}`;
+
+      const scoreGrid = document.getElementById("scoreGrid");
+      scoreGrid.innerHTML = "";
+
+      results.forEach(cat => {
+        const div = document.createElement("div");
+        div.className = "score-card";
+        div.innerHTML = `
+          <h3><span class="dot" style="background:${cat.color}"></span>${cat.name}</h3>
+          <div class="score">${cat.score}点 / 2点</div>
+          <span class="status">${getStatus(cat.score)}</span>
+          <div class="detail">
+            <strong>潜在意識の壁：</strong>${cat.wall}<br>
+            <strong>認知バイアス例：</strong>${cat.bias}<br>
+            <strong>一言：</strong>${cat.feedback}
+          </div>
+        `;
+        scoreGrid.appendChild(div);
+      });
+
+      const top3 = [...results]
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 3);
+
+      const top3Box = document.getElementById("top3");
+      top3Box.innerHTML = "";
+
+      top3.forEach((cat, index) => {
+        const div = document.createElement("div");
+        div.className = "top-item";
+        div.innerHTML = `
+          <h3>${index + 1}位：${cat.name}｜${cat.score}点</h3>
+          <p><strong>なぜボトルネックになるか：</strong>${cat.wall}</p>
+          <p><strong>放置すると：</strong>同じ悩みを繰り返しやすくなり、行動する前に自分で可能性を狭めてしまうかもしれません。</p>
+          <p><strong>整えると：</strong>自分の本音や選択肢に気づきやすくなり、次の一歩が自然に見えやすくなります。</p>
+        `;
+        top3Box.appendChild(div);
+      });
+
+      const result = document.getElementById("result");
+      result.style.display = "block";
+      result.scrollIntoView({ behavior: "smooth" });
+    }
+
+    function resetForm() {
+      document.querySelectorAll("input[type='radio']").forEach(input => input.checked = false);
+      document.getElementById("result").style.display = "none";
+      document.getElementById("error").style.display = "none";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    renderQuestions();
+  </script>
+</body>
+</html>
