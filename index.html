@@ -8,6 +8,7 @@
   <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
 
@@ -19,11 +20,13 @@
       --learning: #62b66e;
       --hobby: #7ed6df;
       --living: #5dade2;
-      --relationship: #a084dc;
+      --relation: #a084dc;
       --ink: #243042;
       --muted: #6b7280;
       --gold: #b9975b;
     }
+
+    * { box-sizing: border-box; }
 
     body {
       min-height: 100vh;
@@ -31,23 +34,24 @@
       font-family: 'Noto Sans JP', sans-serif;
       color: var(--ink);
       background:
-        radial-gradient(circle at top left, rgba(246,166,200,.22), transparent 28%),
-        radial-gradient(circle at top right, rgba(126,214,223,.22), transparent 28%),
+        radial-gradient(circle at top left, rgba(246,166,200,.24), transparent 28%),
+        radial-gradient(circle at top right, rgba(126,214,223,.25), transparent 30%),
+        radial-gradient(circle at bottom left, rgba(185,151,91,.14), transparent 32%),
         linear-gradient(180deg, #fffdfa 0%, #fbfaf7 100%);
     }
 
     .glass-card {
-      background: rgba(255, 255, 255, 0.84);
-      backdrop-filter: blur(14px);
-      border: 1px solid rgba(255,255,255,.7);
-      box-shadow: 0 22px 60px rgba(36,48,66,.10);
+      background: rgba(255,255,255,.84);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,.72);
+      box-shadow: 0 24px 70px rgba(36,48,66,.12);
     }
 
     .rainbow-line {
       height: 5px;
       background: linear-gradient(to right,
         var(--mental), var(--health), var(--work), var(--money),
-        var(--learning), var(--hobby), var(--living), var(--relationship));
+        var(--learning), var(--hobby), var(--living), var(--relation));
       border-radius: 999px;
     }
 
@@ -58,16 +62,20 @@
 
     .btn-gradient:hover {
       transform: translateY(-2px);
-      box-shadow: 0 14px 26px rgba(160,132,220,.26);
+      box-shadow: 0 14px 30px rgba(160,132,220,.28);
     }
 
-    .soft-enter {
-      animation: softEnter .45s ease both;
-    }
+    .soft-enter { animation: softEnter .45s ease both; }
 
     @keyframes softEnter {
-      from { opacity: 0; transform: translateY(10px); }
+      from { opacity: 0; transform: translateY(12px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo-wrap {
+      background: rgba(255,255,255,.76);
+      border: 1px solid rgba(185,151,91,.18);
+      box-shadow: 0 14px 36px rgba(36,48,66,.08);
     }
   </style>
 </head>
@@ -75,10 +83,32 @@
   <div id="root" class="w-full max-w-xl"></div>
 
   <script type="text/babel">
+    function Logo({ size = 'h-24' }) {
+      const [src, setSrc] = React.useState('rogo.pmg');
+      const [fallbackUsed, setFallbackUsed] = React.useState(false);
+
+      return (
+        <div className="logo-wrap mx-auto mb-7 rounded-[1.75rem] px-6 py-5 w-fit">
+          <img
+            src={src}
+            alt="Happy Life Rainbow"
+            className={`${size} mx-auto object-contain`}
+            onError={() => {
+              if (!fallbackUsed) {
+                setFallbackUsed(true);
+                setSrc('logo.png');
+              }
+            }}
+          />
+        </div>
+      );
+    }
+
     function App() {
       const [step, setStep] = React.useState('welcome');
       const [qIdx, setQIdx] = React.useState(0);
       const [scores, setScores] = React.useState({});
+      const questionsPerCategory = 5;
 
       const categories = [
         {
@@ -166,7 +196,7 @@
           firstStep: '今日の問い：部屋・時間・習慣の中で、ひとつ整えるなら何ですか？'
         },
         {
-          id: 'relationship', name: 'RELATIONSHIP', jp: '人間関係', color: '#a084dc',
+          id: 'relation', name: 'RELATIONSHIP', jp: '人間関係', color: '#a084dc',
           questions: [
             '本音を言うと嫌われる、迷惑をかける、と思ってしまうことがある。',
             '人に頼るより、自分で抱え込んだ方が楽だと感じることがある。',
@@ -179,7 +209,6 @@
         }
       ];
 
-      const questionsPerCategory = 5;
       const totalQuestions = categories.length * questionsPerCategory;
 
       const handleAnswer = (val) => {
@@ -189,20 +218,16 @@
         else setStep('result');
       };
 
-      const getTopCategory = () => {
-        return categories
-          .map(cat => ({ ...cat, score: scores[cat.id] || 0 }))
-          .sort((a, b) => b.score - a.score)[0];
-      };
+      const getTopCategory = () => categories
+        .map(cat => ({ ...cat, score: scores[cat.id] || 0 }))
+        .sort((a, b) => b.score - a.score)[0];
 
       if (step === 'welcome') return (
         <div className="glass-card rounded-[2rem] p-9 sm:p-11 text-center soft-enter">
-          <div className="mx-auto mb-7 h-20 w-20 rounded-full bg-white/80 shadow-sm flex items-center justify-center">
-            <span className="text-4xl">🌈</span>
-          </div>
+          <Logo size="h-24 sm:h-28" />
           <p className="text-[11px] font-bold tracking-[.25em] text-[#b9975b] mb-3">HAPPY LIFE RAINBOW™</p>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-800 mb-4">潜在意識バイアス診断</h1>
-          <div className="rainbow-line mb-8 w-28 mx-auto"></div>
+          <div className="rainbow-line mb-8 w-32 mx-auto"></div>
           <p className="text-gray-500 leading-relaxed mb-9 text-sm">
             人生の8領域から、今の心のブレーキをやさしく見える化。<br />
             自己理解で終わらせず、本当の願望への小さな扉を開きます。
@@ -253,6 +278,7 @@
 
         return (
           <div className="glass-card rounded-[2rem] p-8 sm:p-10 soft-enter">
+            <Logo size="h-20 sm:h-24" />
             <p className="text-[11px] text-center font-bold tracking-[.25em] text-[#b9975b] mb-2">DIAGNOSIS RESULT</p>
             <h2 className="text-2xl font-bold text-center mb-3">あなたの虹のメッセージ</h2>
             <p className="text-sm text-center text-gray-500 leading-relaxed mb-8">
@@ -292,13 +318,6 @@
                   </div>
                 );
               })}
-            </div>
-
-            <div className="text-center mb-7">
-              <p className="text-sm leading-relaxed text-gray-500">
-                この結果をもとに、感情の奥にある価値観と<br className="hidden sm:block" />
-                本当の願望を一緒に読み解いていきます。
-              </p>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
