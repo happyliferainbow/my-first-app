@@ -251,6 +251,50 @@
       ]
     };
 
+    function getSkyState(total) {
+      if (total >= 26) {
+        return {
+          title: '光が少し見えにくくなっている空の状態',
+          message: 'いくつかの領域で、気持ちの重なりや疲れが出ているようです。無理に晴らそうとしなくても大丈夫です。まずは、いま感じていることをそのまま受け止めるところから、少しずつ空は整っていきます。'
+        };
+      }
+      if (total >= 16) {
+        return {
+          title: '晴れと雲が重なっている空の状態',
+          message: '前向きな気持ちと、少し立ち止まりたい気持ちが同時にあるようです。このゆらぎは、次の方向を見つけるための自然なサインです。焦らず見つめていくことで、必要な光が少しずつ見えてきます。'
+        };
+      }
+      return {
+        title: '光がやわらかく広がっている空の状態',
+        message: '全体的に、今のあなたを支える土台が穏やかに整っています。ここからは、無理に変えるよりも、心地よい感覚を大切にしながら、さらに自分らしい方向へ広げていけそうです。'
+      };
+    }
+
+    function getCategorySkyReport(cat) {
+      const reports = {
+        mental: 'メンタルの領域では、自分に対して少し厳しくなっている感覚があるかもしれません。本当はできていることもあるのに、足りない部分に意識が向きやすくなっている状態です。空でいうと、少し雲がかかって光が見えにくくなっているようなイメージです。',
+        health: '健康の領域では、少し無理をしている感覚や、自分の回復を後回しにしている流れがあるようです。頑張れている一方で、休むタイミングが少しずれているのかもしれません。空でいうと、風が少し強く吹き続けているような状態です。',
+        work: '仕事の領域では、どこかで違和感を感じながらも、そのまま進んでいる感覚があるかもしれません。本当はこうしたい、という気持ちが、少しずつ内側に見え始めている状態です。空でいうと、雲のすき間から光が差し始めているようなイメージです。',
+        money: 'お金の領域では、安心したい気持ちと、もう少し広げていきたい気持ちが、同時にあるように見えます。どちらか一方ではなく、その両方を感じている状態です。空でいうと、晴れと雲が重なっているような感覚に近いかもしれません。',
+        learning: '学びの領域では、成長したい気持ちはあるものの、一歩を踏み出すことに少し迷いがあるかもしれません。やってみたい気持ちと、うまくできるかどうかの不安が、同時に存在している状態です。空でいうと、少しずつ光が広がり始めているようなイメージです。',
+        hobby: '趣味の領域では、楽しみたい気持ちはあるものの、少し後回しになっている感覚があるかもしれません。やるべきことを優先する中で、自分のワクワクが少し遠くなっている状態です。空でいうと、やわらかい光が少しずつ戻ってきているようなイメージです。',
+        living: '暮らしの領域では、少しだけ整えきれていない感覚や、後回しになっている部分があるようです。大きな問題ではないけれど、どこか落ち着ききらない感覚につながっているかもしれません。空でいうと、うっすら雲がかかっているような状態です。',
+        relation: '人間関係の領域では、相手を大切にする気持ちが強い一方で、自分の気持ちを少し後回しにしているかもしれません。やさしさがあるからこそ、バランスが少しだけ偏っている状態です。空でいうと、やわらかい光があるけれど、少し控えめに広がっているようなイメージです。'
+      };
+      return reports[cat.id];
+    }
+
+    function getPersonalCategoryReport(cat) {
+      const level = getMoyamoyaLevel(cat.score);
+      if (cat.score >= 4) {
+        return getCategorySkyReport(cat) + ' まずは変えようとするよりも、この感覚に気づけたことを大切にしてみてください。';
+      }
+      if (cat.score >= 2) {
+        return getCategorySkyReport(cat) + ' 小さく整えていくことで、この領域の見え方は少しずつやさしく変わっていきます。';
+      }
+      return cat.jp + 'の領域は、今のあなたを支える安定した光として働いています。大きなもやもやは少なく、自分らしい感覚を比較的自然に保てている状態です。ここを起点に、他の領域にも心地よさを広げていけそうです。';
+    }
+
     const oppositePairs = { mental: 'learning', learning: 'mental', health: 'hobby', hobby: 'health', work: 'living', living: 'work', money: 'relation', relation: 'money' };
     const adjacentNext = { mental: 'health', health: 'work', work: 'money', money: 'learning', learning: 'hobby', hobby: 'living', living: 'relation', relation: 'mental' };
     const pairThemes = { 'mental-learning': '内面と成長の対話', 'health-hobby': 'エネルギーと楽しさの循環', 'work-living': '役割と日常のバランス', 'money-relation': '価値とつながりの関係性' };
@@ -281,6 +325,7 @@
       const next = getCategory(adjacentNext[top.id]);
       const pairKey = [top.id, opposite.id].sort().join('-');
       const pairTheme = pairThemes[pairKey] || '内側と外側のバランス';
+      const skyState = getSkyState(total);
 
       let totalLabel = '自分への見え方をやさしく整えること';
       let totalMessage = '全体を通して、少しだけ自分に厳しくなりやすい傾向が見えています。でもそれは、もっとよくなりたいという前向きなエネルギーの裏返しでもあります。まずは、できていない部分ではなく、すでにできていることや持っているものに目を向ける時間を、ほんの少し増やしてみてください。';
@@ -296,7 +341,7 @@
         totalMessage = '全体のバランスは比較的クリアで、今のあなたを支える土台が整っています。ここからは整えるだけでなく、理想のビジョンに向けて、好き・挑戦・つながりを少しずつ広げていくフェーズです。';
       }
 
-      return { scored, top, second, third, total, opposite, next, pairTheme, totalLabel, totalMessage };
+      return { scored, top, second, third, total, opposite, next, pairTheme, totalLabel, totalMessage, skyState };
     }
 
     function CategoryCircleChart({ scored }) {
@@ -486,10 +531,16 @@
 
           <CategoryCircleChart scored={insight.scored} />
 
-          <section className="soft-card rounded-[2.5rem] p-8 sm:p-10 mb-10">
+          <section className="soft-card rounded-[2.5rem] p-8 sm:p-10 mb-8">
             <p className="text-xs font-bold tracking-[0.25em] text-slate-400 mb-4">いまのあなたの整えポイント</p>
             <h3 className="text-2xl sm:text-3xl font-black text-slate-800 mb-5">{insight.totalLabel}</h3>
             <p className="text-slate-600 leading-loose text-sm sm:text-base">{insight.totalMessage}</p>
+          </section>
+
+          <section className="rounded-[2.5rem] p-8 sm:p-10 mb-10 bg-gradient-to-br from-sky-50/80 via-white/78 to-pink-50/70 border border-white/90 shadow-sm">
+            <p className="text-xs font-bold tracking-[0.25em] text-slate-400 mb-4">いまのあなたの空の状態</p>
+            <h3 className="serif text-2xl sm:text-3xl text-slate-800 mb-5 leading-relaxed">{insight.skyState.title}</h3>
+            <p className="text-slate-600 leading-loose text-sm sm:text-base">{insight.skyState.message}</p>
           </section>
 
           <section className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
@@ -526,7 +577,7 @@
                     <span className={'self-start sm:self-center inline-block text-[11px] font-bold border rounded-full px-3 py-1 ' + level.badge}>もやもや指数 {cat.percent}% / {level.label}</span>
                   </div>
                   <h5 className="serif text-lg sm:text-xl text-slate-800 mb-4">{cat.reportTitle}</h5>
-                  <p className="text-sm sm:text-base text-slate-600 leading-loose mb-4">{cat.report}</p>
+                  <p className="text-sm sm:text-base text-slate-600 leading-loose mb-4">{getPersonalCategoryReport(cat)}</p>
                   <p className="text-sm sm:text-base text-slate-600 leading-loose">ここから少しずつ、{cat.action}</p>
                 </article>
               );
@@ -541,8 +592,7 @@
 
           <section className="text-center rounded-[2.5rem] p-8 sm:p-10 bg-gradient-to-r from-pink-50/70 via-yellow-50/70 to-sky-50/70 border border-white/80 mb-8">
             <p className="serif text-xl sm:text-2xl text-slate-700 leading-loose mb-5">もやもやは、変化の入り口です。</p>
-            <p className="text-sm text-slate-500 leading-loose">いま感じている違和感や揺らぎは、これからの自分にとって大切なヒントになります。<br />心に虹のかかる毎日を。
-ここから、あなたのペースで整えていきましょう。</p>
+            <p className="text-sm text-slate-500 leading-loose">いま感じている違和感や揺らぎは、これからの自分にとって大切なヒントになります。<br />心に虹のかかる毎日を。<br />ここから、あなたのペースで整えていきましょう。</p>
           </section>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
