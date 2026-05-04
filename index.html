@@ -414,11 +414,10 @@
                   <g key={cat.id}>
                     <line x1={center} y1={center} x2={p.x} y2={p.y} stroke="#e2e8f0" strokeWidth="1" opacity=".35" />
                     <circle cx={dot.x} cy={dot.y} r="4" fill={cat.color} opacity=".9" />
-                    <foreignObject x={p.x - 30} y={p.y - 30} width="60" height="60">
-                      <div className="w-[60px] h-[60px] rounded-full bg-white/60 border border-white/80 backdrop-blur-md flex items-center justify-center shadow-sm">
-                        <CategoryIcon id={cat.id} color={cat.color} size={34} />
-                      </div>
-                    </foreignObject>
+                    <circle cx={p.x} cy={p.y} r="30" fill="rgba(255,255,255,.66)" stroke="rgba(255,255,255,.88)" strokeWidth="1.2" />
+                    <g transform={`translate(${p.x - 22}, ${p.y - 22}) scale(0.1467)`}>
+                      <IconGlyph id={cat.id} color={cat.color} />
+                    </g>
                   </g>
                 );
               })}
@@ -466,7 +465,25 @@
             <div className="absolute inset-[28%] rounded-full border border-white/50 bg-white/20 backdrop-blur-sm"></div>
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-36 h-36 sm:w-44 sm:h-44 rounded-full bg-white/46 border border-white/70 backdrop-blur-xl shadow-sm flex items-center justify-center p-8">
-                <img src="/mnt/data/logo.png" alt="Happy Life Rainbow Logo" className="w-full h-full object-contain opacity-90" />
+                <img src="./logo.png" alt="Happy Life Rainbow Logo" className="w-full h-full object-contain opacity-90 drop-shadow-sm" onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.nextElementSibling.style.display = 'flex'; }} />
+                <div className="hidden w-full h-full items-center justify-center rounded-full">
+                  <svg viewBox="0 0 120 120" className="w-full h-full" aria-label="Happy Life Rainbow fallback logo">
+                    <defs>
+                      <linearGradient id="fallbackLogoRainbow" x1="10" y1="60" x2="110" y2="60" gradientUnits="userSpaceOnUse">
+                        <stop offset="0%" stopColor="#FF9AA2" />
+                        <stop offset="18%" stopColor="#FFB347" />
+                        <stop offset="34%" stopColor="#FFD93D" />
+                        <stop offset="50%" stopColor="#6BCB77" />
+                        <stop offset="66%" stopColor="#4ECDC4" />
+                        <stop offset="82%" stopColor="#5DADE2" />
+                        <stop offset="100%" stopColor="#C8A2C8" />
+                      </linearGradient>
+                    </defs>
+                    <path d="M22 72 C34 38 86 38 98 72" fill="none" stroke="url(#fallbackLogoRainbow)" strokeWidth="10" strokeLinecap="round" />
+                    <path d="M34 74 C44 52 76 52 86 74" fill="none" stroke="url(#fallbackLogoRainbow)" strokeWidth="7" strokeLinecap="round" opacity=".72" />
+                    <circle cx="60" cy="80" r="7" fill="#C8A2C8" opacity=".75" />
+                  </svg>
+                </div>
               </div>
             </div>
             {categories.map(function(cat, i) {
