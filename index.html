@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -391,10 +390,10 @@
         return Object.assign({}, c, { score: found ? found.score : 0 });
       });
 
-      const center = 150;
-      const chartR = 86;
-      const iconR = 138;
-      const radarMaxR = 58;
+      const center = 190;
+      const chartR = 92;
+      const iconR = 148;
+      const radarMaxR = 62;
       const angleOffset = -90;
 
       function point(index, radius) {
@@ -406,7 +405,7 @@
       }
 
       const radarPoints = ordered.map(function(cat, i) {
-        const r = 18 + (cat.score / 5) * radarMaxR;
+        const r = 20 + (cat.score / 5) * radarMaxR;
         const p = point(i, r);
         return p.x + ',' + p.y;
       }).join(' ');
@@ -422,10 +421,10 @@
             </p>
           </div>
 
-          <div className="relative w-[390px] h-[390px] max-w-full mx-auto">
-            <svg viewBox="0 0 300 300" className="w-full h-full overflow-visible">
+          <div className="relative w-full max-w-[430px] mx-auto">
+            <svg viewBox="0 0 380 380" className="w-full h-auto overflow-visible" aria-label="Inner Bias Map">
               <defs>
-                <linearGradient id="rainbowStroke" x1="45" y1="45" x2="255" y2="255">
+                <linearGradient id="rainbowStroke" x1="80" y1="80" x2="300" y2="300">
                   <stop offset="0%" stopColor="#FF9AA2" />
                   <stop offset="14%" stopColor="#FFB347" />
                   <stop offset="28%" stopColor="#FFD93D" />
@@ -435,21 +434,19 @@
                   <stop offset="84%" stopColor="#5DADE2" />
                   <stop offset="100%" stopColor="#C8A2C8" />
                 </linearGradient>
-                <linearGradient id="softRainbowFill" x1="45" y1="45" x2="255" y2="255">
-                  <stop offset="0%" stopColor="#FF9AA2" stopOpacity=".15" />
-                  <stop offset="28%" stopColor="#FFD93D" stopOpacity=".12" />
-                  <stop offset="56%" stopColor="#4ECDC4" stopOpacity=".13" />
-                  <stop offset="84%" stopColor="#5DADE2" stopOpacity=".12" />
-                  <stop offset="100%" stopColor="#C8A2C8" stopOpacity=".15" />
-                </linearGradient>
+                <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor="#ffffff" stopOpacity=".95" />
+                  <stop offset="70%" stopColor="#ffffff" stopOpacity=".62" />
+                  <stop offset="100%" stopColor="#e0f2fe" stopOpacity=".22" />
+                </radialGradient>
               </defs>
 
               {[1,2,3,4,5].map(function(n) {
-                return <circle key={n} cx={center} cy={center} r={18 + n * 12} fill="none" stroke="#e8edf3" strokeWidth="1" strokeDasharray="3 5" />;
+                return <circle key={n} cx={center} cy={center} r={20 + n * 13} fill="none" stroke="#e8edf3" strokeWidth="1" strokeDasharray="3 5" />;
               })}
 
               {ordered.map(function(cat, i) {
-                const p1 = point(i, 22);
+                const p1 = point(i, 24);
                 const p2 = point(i, chartR);
                 return <line key={cat.id} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke="#d7dde7" strokeWidth="1" strokeDasharray="4 5" />;
               })}
@@ -463,35 +460,34 @@
               <polygon points={radarPoints} fill="rgba(203,213,225,.22)" stroke="rgba(148,163,184,.55)" strokeWidth="1.15" opacity=".95" />
 
               {ordered.map(function(cat, i) {
-                const p = point(i, 18 + (cat.score / 5) * radarMaxR);
+                const p = point(i, 20 + (cat.score / 5) * radarMaxR);
                 return <circle key={cat.id + '-dot'} cx={p.x} cy={p.y} r="4" fill={cat.color} stroke="white" strokeWidth="2" />;
               })}
 
-              <circle cx="150" cy="150" r={chartR} fill="none" stroke="url(#rainbowStroke)" strokeWidth="3" opacity=".95" />
+              <circle cx={center} cy={center} r={chartR} fill="none" stroke="url(#rainbowStroke)" strokeWidth="3" opacity=".95" />
+
+              <circle cx={center} cy={center} r="48" fill="url(#centerGlow)" stroke="rgba(255,255,255,.9)" strokeWidth="1" />
+              <text x={center} y={center - 12} textAnchor="middle" fill="#94a3b8" fontSize="10" fontWeight="900" letterSpacing="3">INNER</text>
+              <text x={center} y={center + 4} textAnchor="middle" fill="#94a3b8" fontSize="10" fontWeight="900" letterSpacing="3">BIAS</text>
+              <text x={center} y={center + 20} textAnchor="middle" fill="#94a3b8" fontSize="10" fontWeight="900" letterSpacing="3">MAP</text>
+
+              {ordered.map(function(cat, i) {
+                const p = point(i, iconR);
+                return (
+                  <g key={cat.id + '-label'} transform={'translate(' + p.x + ' ' + p.y + ')'}>
+                    <circle r="27" fill="rgba(255,255,255,.82)" stroke="rgba(255,255,255,.96)" strokeWidth="1.2" />
+                    <g transform="translate(-14 -20) scale(.095)">
+                      <CategoryIcon id={cat.id} color={cat.color} size={300} />
+                    </g>
+                    <text y="42" textAnchor="middle" fill={cat.color} fontSize="10" fontWeight="900" letterSpacing="1.2">{cat.jp}</text>
+                    <text y="56" textAnchor="middle" fill="#94a3b8" fontSize="10" fontWeight="700">{cat.score}/5</text>
+                  </g>
+                );
+              })}
             </svg>
-
-            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
-              <div className="absolute w-28 h-28 rounded-full bg-gradient-to-br from-pink-200/25 via-yellow-100/20 to-blue-200/25 blur-2xl"></div>
-              <div className="relative z-10 bg-white/62 border border-white rounded-full w-24 h-24 flex items-center justify-center shadow-sm">
-                <p className="text-[9px] tracking-[0.28em] text-slate-400 font-black leading-relaxed">INNER<br />BIAS<br />MAP</p>
-              </div>
-            </div>
-
-            {ordered.map(function(cat, i) {
-              const p = point(i, iconR);
-              return (
-                <div key={cat.id + '-label'} className="absolute -translate-x-1/2 -translate-y-1/2 text-center" style={{ left: p.x + 30, top: p.y + 30 }}>
-                  <div className="w-12 h-12 rounded-full bg-white/80 border border-white shadow-sm flex items-center justify-center mx-auto mb-1">
-                    <CategoryIcon id={cat.id} color={cat.color} size={28} />
-                  </div>
-                  <p className="text-[10px] font-black whitespace-nowrap" style={{ color: cat.color }}>{cat.jp}</p>
-                  <p className="text-[10px] text-slate-400 font-bold">{cat.score}/5</p>
-                </div>
-              );
-            })}
           </div>
 
-          <div className="mt-10 bg-white/60 border border-white rounded-2xl p-4 text-center">
+          <div className="mt-8 bg-white/60 border border-white rounded-2xl p-4 text-center">
             <p className="text-xs text-slate-500 leading-relaxed">
               外側の円は8カテゴリーの循環、点線は対面テーマを表します。高く出た領域は「悪い場所」ではなく、あなたの虹をもう一度輝かせる入口です。
             </p>
