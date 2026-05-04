@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ハッピーライフレインボー™︎ | 潜在意識バイアス診断</title>
+  <title>Happy Life Rainbow™ | 心の虹バランスチェック</title>
 
   <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
@@ -42,9 +42,9 @@
       inset: 0;
       z-index: -1;
       background:
-        radial-gradient(circle at 15% 12%, rgba(255,154,162,.23), transparent 28%),
+        radial-gradient(circle at 15% 12%, rgba(255,154,162,.20), transparent 28%),
         radial-gradient(circle at 88% 16%, rgba(126,214,223,.22), transparent 30%),
-        radial-gradient(circle at 50% 90%, rgba(107,203,119,.16), transparent 32%),
+        radial-gradient(circle at 50% 90%, rgba(107,203,119,.14), transparent 32%),
         linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
     }
 
@@ -58,9 +58,7 @@
 
     .serif { font-family: 'Noto Serif JP', serif; }
 
-    .text-reveal {
-      animation: textReveal 1.1s cubic-bezier(.16, 1, .3, 1) both;
-    }
+    .text-reveal { animation: textReveal 1.1s cubic-bezier(.16, 1, .3, 1) both; }
 
     @keyframes textReveal {
       from { opacity: 0; transform: translateY(16px); filter: blur(5px); }
@@ -84,9 +82,19 @@
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 999px; }
 
     .soft-card {
-      background: rgba(255,255,255,.78);
-      border: 1px solid rgba(255,255,255,.9);
+      background: rgba(255,255,255,.80);
+      border: 1px solid rgba(255,255,255,.92);
       box-shadow: 0 16px 36px rgba(31,41,55,.045);
+    }
+
+    .theme-card {
+      background:
+        linear-gradient(180deg, color-mix(in srgb, var(--c) 9%, transparent), rgba(255,255,255,.84) 42%),
+        rgba(255,255,255,.84);
+      border: 1px solid color-mix(in srgb, var(--c) 22%, rgba(255,255,255,.9));
+      box-shadow:
+        0 16px 38px color-mix(in srgb, var(--c) 12%, rgba(31,41,55,.045)),
+        inset 0 1px 0 rgba(255,255,255,.9);
     }
 
     .rainbow-line {
@@ -104,6 +112,42 @@
     }
 
     .hlr-icon:hover svg { transform: scale(1.08); }
+
+    .cover-orbit {
+      position: relative;
+      width: min(78vw, 390px);
+      height: min(78vw, 390px);
+      margin: 0 auto;
+    }
+
+    .orbit-icon {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) rotate(var(--angle)) translateY(-145px) rotate(calc(-1 * var(--angle)));
+      width: 68px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      background: rgba(255,255,255,.26);
+      border: 1px solid rgba(255,255,255,.64);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 12px 28px rgba(31,41,55,.045);
+      transition: all .35s cubic-bezier(.16,1,.3,1);
+    }
+
+    .orbit-icon:hover {
+      background: color-mix(in srgb, var(--c) 12%, rgba(255,255,255,.56));
+      transform: translate(-50%, -50%) rotate(var(--angle)) translateY(-145px) rotate(calc(-1 * var(--angle))) scale(1.06);
+    }
+
+    @media (max-width: 520px) {
+      .orbit-icon { transform: translate(-50%, -50%) rotate(var(--angle)) translateY(-118px) rotate(calc(-1 * var(--angle))); width: 58px; height: 58px; }
+      .orbit-icon:hover { transform: translate(-50%, -50%) rotate(var(--angle)) translateY(-118px) rotate(calc(-1 * var(--angle))) scale(1.05); }
+    }
   </style>
 </head>
 
@@ -121,252 +165,113 @@
       const thin = { fill: 'none', stroke: 'currentColor', strokeWidth: 6, strokeLinecap: 'round', strokeLinejoin: 'round' };
 
       const glyphs = {
-        mental: (
-          <g color={color}>
-            <path {...line} d="M150 220 C105 184 70 154 78 114 C84 83 122 75 150 109 C178 75 216 83 222 114 C230 154 195 184 150 220Z" />
-            <circle cx="150" cy="150" r="5" fill="currentColor" />
-            <path {...thin} d="M95 78 L82 58 M125 62 L118 38 M150 55 L150 28 M175 62 L182 38 M205 78 L218 58" />
-          </g>
-        ),
-        health: (
-          <g color={color}>
-            <path {...line} d="M55 178 C95 138 125 218 150 178 C175 138 205 218 245 178" />
-            <path {...line} d="M55 216 C95 176 125 256 150 216 C175 176 205 256 245 216" />
-            <circle {...line} cx="150" cy="122" r="22" />
-            <circle cx="150" cy="72" r="7" fill="currentColor" />
-            <circle cx="150" cy="42" r="5" fill="currentColor" />
-          </g>
-        ),
-        work: (
-          <g color={color}>
-            <path {...line} d="M50 205 H250" />
-            <path {...line} d="M105 205 A45 45 0 0 1 195 205" />
-            <path {...thin} d="M150 42 V130 M150 42 L132 62 M150 42 L168 62" />
-            <path {...thin} d="M82 150 L58 132 M105 128 L92 100 M128 115 L120 82 M172 115 L180 82 M195 128 L208 100 M218 150 L242 132" />
-          </g>
-        ),
-        money: (
-          <g color={color}>
-            <path {...line} d="M72 176 C72 116 116 74 172 84 C225 94 246 150 221 195 C195 241 132 245 96 207" />
-            <path {...thin} d="M205 84 C218 56 235 44 260 40 C264 68 252 88 225 100" />
-            <path {...thin} d="M198 86 C183 64 161 58 140 62 C145 88 166 101 195 100" />
-            <path {...thin} d="M92 156 C84 166 84 178 92 188" />
-            <circle cx="94" cy="172" r="5" fill="currentColor" />
-          </g>
-        ),
-        learning: (
-          <g color={color}>
-            <path {...line} d="M48 180 C92 162 128 177 150 236 C172 177 208 162 252 180" />
-            <path {...line} d="M65 212 C104 194 131 205 150 236 C169 205 196 194 235 212" />
-            <path {...line} d="M82 242 C115 224 138 229 150 236 C162 229 185 224 218 242" />
-            <path {...thin} d="M150 68 C156 96 166 106 194 112 C166 118 156 128 150 156 C144 128 134 118 106 112 C134 106 144 96 150 68Z" />
-          </g>
-        ),
-        hobby: (
-          <g color={color}>
-            <path {...line} d="M101 218 C57 181 69 91 135 76 C196 62 206 126 178 160 C150 194 93 177 122 130 C148 88 217 112 197 178 C184 220 121 235 103 184 C88 141 161 125 172 172 C182 215 222 225 247 193" />
-            <path {...thin} d="M228 66 C234 91 243 100 268 106 C243 112 234 121 228 146 C222 121 213 112 188 106 C213 100 222 91 228 66Z" />
-            <circle cx="236" cy="164" r="5" fill="currentColor" />
-          </g>
-        ),
-        living: (
-          <g color={color}>
-            <path {...line} d="M55 130 L150 48 L245 130" />
-            <path {...line} d="M75 135 V207 C75 238 100 248 128 248 H172 C200 248 225 238 225 207 V135" />
-            <path {...line} d="M150 230 C117 202 104 181 111 158 C118 135 144 133 150 154 C156 133 182 135 189 158 C196 181 183 202 150 230Z" />
-            <path {...thin} d="M132 88 H168 V124 H132 Z M150 88 V124 M132 106 H168" />
-          </g>
-        ),
-        relation: (
-          <g color={color}>
-            <circle {...line} cx="117" cy="158" r="72" />
-            <circle {...line} cx="183" cy="158" r="72" />
-            <path {...thin} d="M150 187 C132 172 125 160 129 148 C133 136 146 135 150 146 C154 135 167 136 171 148 C175 160 168 172 150 187Z" />
-            <path {...thin} d="M150 52 V34 M126 62 L112 48 M174 62 L188 48" />
-          </g>
-        )
+        mental: (<g color={color}><path {...line} d="M150 220 C105 184 70 154 78 114 C84 83 122 75 150 109 C178 75 216 83 222 114 C230 154 195 184 150 220Z" /><circle cx="150" cy="150" r="5" fill="currentColor" /><path {...thin} d="M95 78 L82 58 M125 62 L118 38 M150 55 L150 28 M175 62 L182 38 M205 78 L218 58" /></g>),
+        health: (<g color={color}><path {...line} d="M55 178 C95 138 125 218 150 178 C175 138 205 218 245 178" /><path {...line} d="M55 216 C95 176 125 256 150 216 C175 176 205 256 245 216" /><circle {...line} cx="150" cy="122" r="22" /><circle cx="150" cy="72" r="7" fill="currentColor" /><circle cx="150" cy="42" r="5" fill="currentColor" /></g>),
+        work: (<g color={color}><path {...line} d="M50 205 H250" /><path {...line} d="M105 205 A45 45 0 0 1 195 205" /><path {...thin} d="M150 42 V130 M150 42 L132 62 M150 42 L168 62" /><path {...thin} d="M82 150 L58 132 M105 128 L92 100 M128 115 L120 82 M172 115 L180 82 M195 128 L208 100 M218 150 L242 132" /></g>),
+        money: (<g color={color}><path {...line} d="M72 176 C72 116 116 74 172 84 C225 94 246 150 221 195 C195 241 132 245 96 207" /><path {...thin} d="M205 84 C218 56 235 44 260 40 C264 68 252 88 225 100" /><path {...thin} d="M198 86 C183 64 161 58 140 62 C145 88 166 101 195 100" /><path {...thin} d="M92 156 C84 166 84 178 92 188" /><circle cx="94" cy="172" r="5" fill="currentColor" /></g>),
+        learning: (<g color={color}><path {...line} d="M48 180 C92 162 128 177 150 236 C172 177 208 162 252 180" /><path {...line} d="M65 212 C104 194 131 205 150 236 C169 205 196 194 235 212" /><path {...line} d="M82 242 C115 224 138 229 150 236 C162 229 185 224 218 242" /><path {...thin} d="M150 68 C156 96 166 106 194 112 C166 118 156 128 150 156 C144 128 134 118 106 112 C134 106 144 96 150 68Z" /></g>),
+        hobby: (<g color={color}><path {...line} d="M101 218 C57 181 69 91 135 76 C196 62 206 126 178 160 C150 194 93 177 122 130 C148 88 217 112 197 178 C184 220 121 235 103 184 C88 141 161 125 172 172 C182 215 222 225 247 193" /><path {...thin} d="M228 66 C234 91 243 100 268 106 C243 112 234 121 228 146 C222 121 213 112 188 106 C213 100 222 91 228 66Z" /><circle cx="236" cy="164" r="5" fill="currentColor" /></g>),
+        living: (<g color={color}><path {...line} d="M55 130 L150 48 L245 130" /><path {...line} d="M75 135 V207 C75 238 100 248 128 248 H172 C200 248 225 238 225 207 V135" /><path {...line} d="M150 230 C117 202 104 181 111 158 C118 135 144 133 150 154 C156 133 182 135 189 158 C196 181 183 202 150 230Z" /><path {...thin} d="M132 88 H168 V124 H132 Z M150 88 V124 M132 106 H168" /></g>),
+        relation: (<g color={color}><circle {...line} cx="117" cy="158" r="72" /><circle {...line} cx="183" cy="158" r="72" /><path {...thin} d="M150 187 C132 172 125 160 129 148 C133 136 146 135 150 146 C154 135 167 136 171 148 C175 160 168 172 150 187Z" /><path {...thin} d="M150 52 V34 M126 62 L112 48 M174 62 L188 48" /></g>)
       };
-
       return glyphs[id];
     }
 
     function CategoryIcon({ id, color, size = 44 }) {
-      return (
-        <span className="hlr-icon inline-flex items-center justify-center">
-          <svg viewBox="0 0 300 300" width={size} height={size} role="img" aria-label={id + ' icon'}>
-            <IconGlyph id={id} color={color} />
-          </svg>
-        </span>
-      );
+      return <span className="hlr-icon inline-flex items-center justify-center"><svg viewBox="0 0 300 300" width={size} height={size} role="img" aria-label={id + ' icon'}><IconGlyph id={id} color={color} /></svg></span>;
     }
 
     const categories = [
-      {
-        id: 'mental', name: 'MENTAL', jp: 'メンタル', color: 'var(--mental)', layer: '価値観・内面',
-        role: 'すべての土台。心のあり方、自己肯定感、マインドセットを整える領域です。',
-        disturbed: '自己否定や思考の固定が起きやすく、行動が止まりやすい状態。',
-        balanced: '自分を信じる力が戻り、自然と選択と行動が軽くなる状態。',
-        questions: [
-          '本当は変わりたいのに、「自分には無理かもしれない」と感じることがある。',
-          'うまくいかない理由を、自分の性格や過去のせいにしてしまうことがある。',
-          '人と比べて、自分には足りないものばかり見えてしまうことがある。',
-          '褒められても素直に受け取れず、「まだまだ」と思ってしまう。',
-          '本音よりも、周りからどう見られるかを優先してしまうことがある。'
-        ]
-      },
-      {
-        id: 'health', name: 'HEALTH', jp: '健康', color: 'var(--health)', layer: '身体・行動力',
-        role: '行動力の源泉。体力、回復力、睡眠、生活リズムを支える領域です。',
-        disturbed: '疲れやストレスが溜まり、集中力や前向きさが下がりやすい状態。',
-        balanced: '心身の土台が安定し、自然に動き続けられる状態。',
-        questions: [
-          '自分の体調や疲れを後回しにして、無理を続けてしまうことがある。',
-          '健康を整えたいと思っても、「忙しいから仕方ない」と諦めてしまう。',
-          '休むことに罪悪感があり、つい予定を詰め込んでしまう。',
-          '睡眠・食事・運動を整えたいと思いながら、後回しになりやすい。',
-          '体からの小さなサインに気づいても、まだ大丈夫だと思ってしまう。'
-        ]
-      },
-      {
-        id: 'work', name: 'WORK', jp: '仕事', color: 'var(--work)', layer: '社会・価値発揮',
-        role: '価値発揮の場。役割、キャリア、貢献、社会との接点を表します。',
-        disturbed: 'やりがいや自己表現が弱まり、働き方への違和感が強まりやすい状態。',
-        balanced: '自分の価値を実感し、貢献と成長がつながる状態。',
-        questions: [
-          '今の仕事や役割に違和感があっても、「これが現実だから」と我慢している。',
-          '自分の本当にやりたい仕事を考えると、現実的ではない気がしてしまう。',
-          '仕事で評価されるために、自分らしさを抑えていると感じることがある。',
-          '本当は挑戦したいことがあっても、安定を手放すのが怖い。',
-          '自分の強みや価値が、仕事で十分に活かされていない気がする。'
-        ]
-      },
-      {
-        id: 'money', name: 'MONEY', jp: 'お金', color: 'var(--money)', layer: '選択肢・安心感',
-        role: '人生の選択肢。収入、支出、価値交換、豊かさを受け取る力を扱います。',
-        disturbed: '不安や罪悪感から、選択や自己投資にブレーキがかかりやすい状態。',
-        balanced: 'お金の使い方・受け取り方に納得感があり、選択肢が広がる状態。',
-        questions: [
-          'お金を使うことに、どこか罪悪感や不安を感じることがある。',
-          '自分がもっと豊かになっていい、とは心から思えないことがある。',
-          'お金の話をすることに、抵抗感や恥ずかしさがある。',
-          '欲しいものがあっても、「自分には贅沢かも」と思ってしまう。',
-          '収入や価格を上げることに、どこか申し訳なさを感じる。'
-        ]
-      },
-      {
-        id: 'learning', name: 'LEARNING', jp: '学び', color: 'var(--learning)', layer: '未来・成長',
-        role: '未来を広げる力。知識、スキル、探究、可能性を育てる領域です。',
-        disturbed: '完璧主義や比較によって、新しい一歩を止めやすい状態。',
-        balanced: '小さく試しながら吸収し、未来の選択肢が広がる状態。',
-        questions: [
-          '学びたい気持ちはあるのに、「今さら遅い」と感じることがある。',
-          '新しいことを始める前に、失敗や継続できない自分を想像して止まってしまう。',
-          '完璧に準備できるまで、始めない方がいいと思ってしまう。',
-          '学んでも結果につながらなかったらどうしよう、と不安になる。',
-          '自分より詳しい人を見ると、始める前から自信をなくしてしまう。'
-        ]
-      },
-      {
-        id: 'hobby', name: 'HOBBY', jp: '趣味', color: 'var(--hobby)', layer: '彩り・創造性',
-        role: '人生の彩り。楽しさ、余白、遊び心、創造性を取り戻す領域です。',
-        disturbed: '楽しむことへの罪悪感から、心の余白や発想力が減りやすい状態。',
-        balanced: '楽しさがエネルギーとなり、日常と成長に彩りが生まれる状態。',
-        questions: [
-          '好きなことをする時間に、どこか罪悪感を覚えることがある。',
-          '趣味や楽しみは「余裕がある人のもの」だと思ってしまう。',
-          '役に立つことや成果につながることを優先し、楽しみを後回しにしやすい。',
-          '自分が何を好きなのか、すぐに答えられないことがある。',
-          '楽しんでいる自分を、人に見せるのが少し恥ずかしい。'
-        ]
-      },
-      {
-        id: 'living', name: 'LIVING', jp: '暮らし', color: 'var(--living)', layer: '日常・環境',
-        role: '日常の質。住まい、時間、生活習慣、心地よい環境を整える領域です。',
-        disturbed: '日々をこなす感覚が強くなり、心地よさや安定感が薄れやすい状態。',
-        balanced: '環境が整い、安心して自分らしく過ごせる状態。',
-        questions: [
-          '本当は暮らし方を変えたいのに、「今の環境では難しい」と思っている。',
-          '自分が心地よく過ごすことより、日々をこなすことを優先している。',
-          '住まいや持ち物、時間の使い方に違和感があっても見ないふりをしている。',
-          '理想の暮らしを考えると、今の自分にはまだ遠いと感じる。',
-          '日常を整えることより、目の前の予定をこなすことが多い。'
-        ]
-      },
-      {
-        id: 'relation', name: 'RELATIONSHIP', jp: '人間関係', color: 'var(--relation)', layer: 'つながり・安心',
-        role: '人生の満足度。家族、友人、職場、信頼、安心してつながる力を扱います。',
-        disturbed: '遠慮や我慢が増え、本音や安心感が見えにくくなる状態。',
-        balanced: '安心して頼り合い、自分らしい関係性を育てられる状態。',
-        questions: [
-          '本音を言うと嫌われる、迷惑をかける、と思ってしまうことがある。',
-          '人に頼るより、自分で抱え込んだ方が楽だと感じることがある。',
-          '相手に合わせすぎて、自分の気持ちが分からなくなることがある。',
-          '断ることやお願いすることに、強いハードルを感じる。',
-          '本当はもっと安心してつながりたいのに、距離を取ってしまうことがある。'
-        ]
-      }
+      { id: 'mental', name: 'MENTAL', jp: 'メンタル', color: 'var(--mental)', layer: '価値観・内面', role: 'すべての土台。心のあり方、自己肯定感、マインドセットを整える領域です。', disturbed: '自己否定や思考の固定が起きやすく、行動が止まりやすい状態。', balanced: '自分を信じる力が戻り、自然と選択と行動が軽くなる状態。', reportTitle: '自分への見え方をやさしく整えること', report: 'いまのあなたには、自分に対して少し厳しくなりやすい状態が見えています。本当はすでに持っているものがあるのに、まだ足りないと感じる瞬間があるのかもしれません。でもそれは、もっと自分らしくありたいという気持ちの表れでもあります。', action: 'できていることや、すでにあるものに目を向けていくことで、自分に対する見え方がやさしく変わっていきます。', questions: ['自分の可能性を思い描くとき、どんな感覚が浮かびますか？', 'うまくいかない出来事があったとき、その理由をどこに置きやすいですか？', '人と比べたとき、自分にはどんな言葉をかけていると感じますか？', '褒められたとき、その言葉をどのくらい自然に受け取れていますか？', '何かを選ぶとき、自分の本音と周りの目のどちらが強く影響していますか？'] },
+      { id: 'health', name: 'HEALTH', jp: '健康', color: 'var(--health)', layer: '身体・行動力', role: '行動力の源泉。体力、回復力、睡眠、生活リズムを支える領域です。', disturbed: '疲れやストレスが溜まり、集中力や前向きさが下がりやすい状態。', balanced: '心身の土台が安定し、自然に動き続けられる状態。', reportTitle: '自分を回復させる時間を先に置くこと', report: 'いまのあなたには、自分のエネルギーを後回しにしやすい流れが見えています。やるべきことや周りの期待を優先する中で、回復のタイミングを逃してしまうことがあるのかもしれません。でもそれは、責任感があり、頑張れる力を持っている証でもあります。', action: 'ほんの少しだけ自分を整える時間を先に置いてみることで、自然とエネルギーの巡りが戻ってきます。', questions: ['最近の体調や疲れを、どのくらい大切なサインとして受け取れていますか？', '忙しさの中で、自分の健康をどの位置に置いていますか？', '休む時間を取るとき、心にはどんな感覚が生まれますか？', '睡眠・食事・運動のリズムは、今の自分にどのくらい合っていますか？', '体からの小さなサインに気づいたとき、どんな対応を選びやすいですか？'] },
+      { id: 'work', name: 'WORK', jp: '仕事', color: 'var(--work)', layer: '社会・価値発揮', role: '価値発揮の場。役割、キャリア、貢献、社会との接点を表します。', disturbed: 'やりがいや自己表現が弱まり、働き方への違和感が強まりやすい状態。', balanced: '自分の価値を実感し、貢献と成長がつながる状態。', reportTitle: '仕事の中に自分らしさを戻すこと', report: 'いまのあなたには、仕事の中で本来の自分とのズレを感じる瞬間が見えています。こうあるべき、こうした方がいいという枠の中で、自分らしさを少し抑えているのかもしれません。でもそれは、本当はもっと自分の力を活かしたいというサインでもあります。', action: '小さな選択の中で自分の感覚を優先する場面を増やすことで、仕事の中の心地よさが少しずつ広がっていきます。', questions: ['今の仕事や役割に対して、心の中にはどんな納得感がありますか？', '本当にやってみたい仕事を考えたとき、どんな声が内側に浮かびますか？', '仕事で評価されることと、自分らしくいることのバランスはどう感じますか？', '挑戦したいことを思い浮かべたとき、何が一番大きく見えますか？', '自分の強みや価値は、今の仕事でどのくらい自然に活かされていますか？'] },
+      { id: 'money', name: 'MONEY', jp: 'お金', color: 'var(--money)', layer: '選択肢・安心感', role: '人生の選択肢。収入、支出、価値交換、豊かさを受け取る力を扱います。', disturbed: '不安や罪悪感から、選択や自己投資にブレーキがかかりやすい状態。', balanced: 'お金の使い方・受け取り方に納得感があり、選択肢が広がる状態。', reportTitle: '豊かさを可能性として受け取ること', report: 'いまのあなたには、お金に対してどこか制限を感じやすい状態が見えています。安心したい気持ちと、もっと自由に選択したい気持ちの間で揺れているのかもしれません。でもそれは、自分にとっての豊かさを大切にしたい気持ちの表れでもあります。', action: 'お金を制限としてではなく、可能性を広げる手段として捉えてみることで、選択の幅が少しずつ変わっていきます。', questions: ['お金を使う場面で、安心感と不安のどちらが強く出やすいですか？', '自分がもっと豊かになることを想像したとき、心はどんな反応をしますか？', 'お金の話をするとき、自分の中にどんな抵抗や自然さがありますか？', '欲しいものや必要な投資を選ぶとき、何を基準に判断していますか？', '自分の価値を価格や収入として受け取ることに、どんな感覚がありますか？'] },
+      { id: 'learning', name: 'LEARNING', jp: '学び', color: 'var(--learning)', layer: '未来・成長', role: '未来を広げる力。知識、スキル、探究、可能性を育てる領域です。', disturbed: '完璧主義や比較によって、新しい一歩を止めやすい状態。', balanced: '小さく試しながら吸収し、未来の選択肢が広がる状態。', reportTitle: '小さく試すことを自分に許すこと', report: 'いまのあなたは、もっと成長したいという想いをしっかり持っている状態です。ただその一方で、完璧にやろうとすることで、動き出しが少し重くなることがあるのかもしれません。でもそれは、自分を高めたいという前向きなエネルギーでもあります。', action: '小さく試すことを許していくことで、学びが自然と楽しい流れに変わっていきます。', questions: ['新しい学びを始めるとき、心にはどんな期待やためらいが浮かびますか？', '失敗や継続への不安は、最初の一歩にどのくらい影響していますか？', '準備が整っていない状態で始めることを、どのくらい許せていますか？', '学びが結果につながるかどうかを、どのくらい気にしていますか？', '今の自分に必要な学びは、義務とワクワクのどちらに近いですか？'] },
+      { id: 'hobby', name: 'HOBBY', jp: '趣味', color: 'var(--hobby)', layer: '喜び・創造性', role: '人生の彩り。遊び、創造、好奇心、心がほどける時間を扱います。', disturbed: '楽しむことへの罪悪感や後回しが増え、心の余白が少なくなりやすい状態。', balanced: '好きなことが自然に日常へ入り、心の軽さと創造性が戻る状態。', reportTitle: '小さな好きとワクワクを思い出すこと', report: 'いまのあなたには、楽しむことを少し後回しにしている流れが見えています。やるべきことを優先する中で、自分のワクワクを抑えてしまうことがあるのかもしれません。でもそれは、責任感や周囲への配慮があるからこそでもあります。', action: '小さな好きを思い出す時間を増やしていくことで、心の軽さが自然と戻ってきます。', questions: ['最近、心から楽しいと感じる時間はどのくらいありますか？', '好きなことをする時間を取るとき、どんな気持ちが生まれますか？', '予定の中で、ワクワクする時間はどのくらい大切にされていますか？', '誰の役にも立たない楽しみを、自分にどのくらい許せていますか？', '子どもの頃のような好奇心は、今どんな形で残っていますか？'] },
+      { id: 'living', name: 'LIVING', jp: '暮らし', color: 'var(--living)', layer: '日常・安心基地', role: '日々の土台。住まい、時間、習慣、安心できる環境を扱います。', disturbed: '日常の乱れや忙しさによって、安心感や回復力が弱まりやすい状態。', balanced: '暮らしのリズムが整い、安心して未来へ向かえる状態。', reportTitle: '暮らしの一部を心地よく整えること', report: 'いまのあなたは、日常の中に少しだけ整えきれていない部分が残っている状態です。忙しさの中で、自分にとって心地よい空間やリズムが後回しになっているのかもしれません。でもそれは、日々をしっかり回している証でもあります。', action: 'ほんの一部分だけでも整えることで、全体の心地よさが連動して変わっていきます。', questions: ['今の暮らしの空間は、自分をどのくらい落ち着かせてくれますか？', '一日のリズムに、自分らしい余白はどのくらいありますか？', '家や身の回りを整えることは、今の自分にとってどんな意味がありますか？', '日常の中で、安心して戻れる場所や時間はありますか？', '暮らしを少し整えるとしたら、最初にどこへ意識が向きますか？'] },
+      { id: 'relation', name: 'RELATION', jp: '人間関係', color: 'var(--relation)', layer: 'つながり・信頼', role: '家族、友人、職場、信頼、安心してつながる力を扱います。', disturbed: '遠慮や我慢が増え、本音や安心感が見えにくくなる状態。', balanced: '安心して頼り合い、自分らしい関係性を育てられる状態。', reportTitle: '自分の本音にもやさしく居場所をつくること', report: 'いまのあなたには、人との関わりの中で少し気を遣いすぎる傾向が見えています。相手を大切にするあまり、自分の気持ちを後回しにしてしまうことがあるのかもしれません。でもそれは、思いやりや優しさをしっかり持っている証です。', action: 'ほんの少しだけ自分の本音にも意識を向けることで、関係性のバランスが自然と整っていきます。', questions: ['本音を伝える場面で、心にはどんな前提が浮かびやすいですか？', '人に頼ることと自分で抱えることのバランスは、今どう感じますか？', '相手に合わせたあと、自分の気持ちはどのくらい残っていますか？', '断ることやお願いすることに、どんなハードルを感じますか？', '安心してつながる距離感は、今のあなたにとってどんな形ですか？'] }
     ];
 
-    const oppositePairs = {
-      mental: 'learning', learning: 'mental',
-      health: 'hobby', hobby: 'health',
-      work: 'living', living: 'work',
-      money: 'relation', relation: 'money'
+    const answerChoices = {
+      mental: [
+        { yes: 'どこかブレーキを感じる', no: '自然と前向きになる' },
+        { yes: '自分を責めたくなる感覚', no: '外の要因に目が向く感覚' },
+        { yes: '足りなさに意識が向く', no: '満たされている感覚がある' },
+        { yes: '受け取るのが少しこわい', no: 'そのまま受け取れてうれしい' },
+        { yes: '周りを優先したくなる', no: '自分の気持ちを大切にしたくなる' }
+      ],
+      health: [
+        { yes: 'つい無理してしまう感覚', no: '自分を労われている感覚' },
+        { yes: '後回しにしている感覚', no: '大切に扱えている感覚' },
+        { yes: '休むことに少し抵抗がある', no: '安心して休める' },
+        { yes: '整っていない違和感がある', no: '流れが整っている感覚' },
+        { yes: 'まだ頑張れると思ってしまう', no: '早めに整えたくなる' }
+      ],
+      work: [
+        { yes: 'どこかズレを感じる', no: 'しっくりきている感覚' },
+        { yes: '難しそうと感じる', no: 'やってみたい気持ちが湧く' },
+        { yes: '評価を気にしてしまう', no: '自分らしさを出せている' },
+        { yes: '不安が先にくる', no: '少しワクワクする' },
+        { yes: '力を出しきれていない感覚', no: '自然に活かせている感覚' }
+      ],
+      money: [
+        { yes: '不安や制限を感じる', no: '安心や広がりを感じる' },
+        { yes: 'どこか遠慮してしまう', no: '受け取っていいと感じる' },
+        { yes: '少し話しにくい感覚', no: '自然に話せる感覚' },
+        { yes: '守ることを優先したくなる', no: '広げる選択をしたくなる' },
+        { yes: '受け取るのに抵抗がある', no: '素直に受け取れる' }
+      ],
+      learning: [
+        { yes: '一歩が少し重い感覚', no: '軽く始められそうな感覚' },
+        { yes: '失敗が気になる', no: '試すことが楽しみ' },
+        { yes: '準備しないと不安', no: 'まずやってみたい' },
+        { yes: '結果が気になりすぎる', no: '過程も楽しめる' },
+        { yes: 'やらなきゃという感覚', no: 'やりたいという感覚' }
+      ],
+      hobby: [
+        { yes: '楽しみを後回しにしている', no: '楽しみを感じられている' },
+        { yes: 'どこか遠慮してしまう', no: '素直に楽しめる' },
+        { yes: 'やるべきことを優先してしまう', no: '好きな時間も大切にできる' },
+        { yes: '少し罪悪感がある', no: '安心して楽しめる' },
+        { yes: 'ワクワクが眠っている', no: '今も動いている感覚' }
+      ],
+      living: [
+        { yes: '落ち着かない感覚がある', no: 'ほっとできる感覚がある' },
+        { yes: '余白が足りない感覚', no: 'ゆとりを感じられる' },
+        { yes: '整えたい気持ちはある', no: 'すでに心地よい' },
+        { yes: '安心できる場所が少ない', no: '安心できる場所がある' },
+        { yes: 'どこから整えればいいか迷う', no: '整えたい場所が見えている' }
+      ],
+      relation: [
+        { yes: '本音を抑えてしまう感覚', no: '自然に伝えられる感覚' },
+        { yes: '自分で抱えたくなる', no: '人に頼れる感覚' },
+        { yes: '相手を優先しがち', no: '自分も大切にできている' },
+        { yes: 'お願いや断るのがこわい', no: '必要な時に伝えられる' },
+        { yes: '距離感に迷う', no: '心地よい距離がある' }
+      ]
     };
 
-    const adjacentNext = {
-      mental: 'health', health: 'work', work: 'money', money: 'learning',
-      learning: 'hobby', hobby: 'living', living: 'relation', relation: 'mental'
-    };
+    const oppositePairs = { mental: 'learning', learning: 'mental', health: 'hobby', hobby: 'health', work: 'living', living: 'work', money: 'relation', relation: 'money' };
+    const adjacentNext = { mental: 'health', health: 'work', work: 'money', money: 'learning', learning: 'hobby', hobby: 'living', living: 'relation', relation: 'mental' };
+    const pairThemes = { 'mental-learning': '内面と成長の対話', 'health-hobby': 'エネルギーと楽しさの循環', 'work-living': '役割と日常のバランス', 'money-relation': '価値とつながりの関係性' };
 
-    const pairThemes = {
-      'mental-learning': '内面と成長の対話',
-      'health-hobby': 'エネルギーと楽しさの循環',
-      'work-living': '役割と日常のバランス',
-      'money-relation': '価値とつながりの関係性'
-    };
+    function getCategory(id) { return categories.find(function(c) { return c.id === id; }); }
 
-    function getCategory(id) {
-      return categories.find(function(c) { return c.id === id; });
+    function getMoyamoyaLevel(score) {
+      if (score >= 5) return { label: 'もやが濃い状態', tone: 'ここには、今のあなたがいちばん丁寧にほどきたい深いサインが集まっています。', badge: 'bg-rose-50 text-rose-500 border-rose-100' };
+      if (score >= 4) return { label: '少し詰まり気味', tone: 'この領域では、気づかないうちに力が入りすぎている可能性があります。', badge: 'bg-pink-50 text-pink-500 border-pink-100' };
+      if (score >= 3) return { label: 'ややゆらぎ', tone: '小さな違和感が、そろそろ言葉にしてほしいサインとして現れています。', badge: 'bg-amber-50 text-amber-600 border-amber-100' };
+      if (score >= 1) return { label: 'ほぼクリア', tone: '大きな詰まりは少なく、少し整えるだけでさらに軽やかになりそうです。', badge: 'bg-sky-50 text-sky-500 border-sky-100' };
+      return { label: 'とてもクリア', tone: 'この領域は、今のあなたを支える安定した光として働いています。', badge: 'bg-emerald-50 text-emerald-500 border-emerald-100' };
     }
 
-    function getLevel(score) {
-      if (score >= 5) return {
-        label: '最優先テーマ',
-        tone: 'ここには、今のあなたがいちばん丁寧にほどきたい深いサインが集まっています。',
-        badge: 'bg-rose-50 text-rose-500 border-rose-100'
-      };
-      if (score >= 4) return {
-        label: '見直し優先',
-        tone: 'この領域では、気づかないうちに力が入りすぎている可能性があります。',
-        badge: 'bg-pink-50 text-pink-500 border-pink-100'
-      };
-      if (score >= 3) return {
-        label: '揺らぎ強め',
-        tone: '小さな違和感が、そろそろ言葉にしてほしいサインとして現れています。',
-        badge: 'bg-amber-50 text-amber-600 border-amber-100'
-      };
-      if (score >= 2) return {
-        label: '揺らぎあり',
-        tone: '大きな乱れではありませんが、日常の中に見過ごしやすい偏りが少しあります。',
-        badge: 'bg-yellow-50 text-yellow-600 border-yellow-100'
-      };
-      return {
-        label: '比較的安定',
-        tone: '今のところ大きな乱れは少なく、安心して育てていける領域です。',
-        badge: 'bg-emerald-50 text-emerald-600 border-emerald-100'
-      };
-    }
+    function scoreToPercent(score) { return Math.round((score / 5) * 100); }
 
-    function normalizePair(a, b) {
-      const order = categories.map(function(c) { return c.id; });
-      return order.indexOf(a) < order.indexOf(b) ? a + '-' + b : b + '-' + a;
-    }
-
-    function generateInsight(scores) {
-      const scored = categories
-        .map(function(c) { return Object.assign({}, c, { score: scores[c.id] || 0 }); })
-        .sort(function(a, b) { return b.score - a.score; });
+    function analyze(answers) {
+      const scored = categories.map(function(cat, idx) {
+        const score = answers.slice(idx * 5, idx * 5 + 5).reduce(function(a, b) { return a + b; }, 0);
+        return Object.assign({}, cat, { score, percent: scoreToPercent(score) });
+      }).sort(function(a, b) { return b.score - a.score; });
 
       const top = scored[0];
       const second = scored[1];
@@ -374,21 +279,21 @@
       const total = scored.reduce(function(sum, c) { return sum + c.score; }, 0);
       const opposite = getCategory(oppositePairs[top.id]);
       const next = getCategory(adjacentNext[top.id]);
-      const pairKey = normalizePair(top.id, opposite.id);
-      const pairTheme = pairThemes[pairKey] || '人生の本質テーマ';
+      const pairKey = [top.id, opposite.id].sort().join('-');
+      const pairTheme = pairThemes[pairKey] || '内側と外側のバランス';
 
-      let totalLabel = '静かな見直し期';
-      let totalMessage = '全体として大きく崩れているというより、いくつかの領域に小さな違和感が出始めている状態です。今のうちに丁寧に言語化すると、未来の選択が軽くなります。';
+      let totalLabel = '自分への見え方をやさしく整えること';
+      let totalMessage = '全体を通して、少しだけ自分に厳しくなりやすい傾向が見えています。でもそれは、もっとよくなりたいという前向きなエネルギーの裏返しでもあります。まずは、できていない部分ではなく、すでにできていることや持っているものに目を向ける時間を、ほんの少し増やしてみてください。';
 
       if (total >= 26) {
-        totalLabel = '人生の再設計期';
-        totalMessage = '複数のカテゴリーにサインが出ています。これは悪い結果ではなく、これまでの生き方を一度見直し、価値観から人生を再設計するタイミングです。';
+        totalLabel = '心の余白を取り戻し、人生の軸を整えること';
+        totalMessage = '複数のカテゴリーに、今のあなたからの大切なサインが出ています。これは悪い結果ではなく、これまで頑張ってきた自分を一度ゆっくり見つめ直すタイミングです。答えを急がず、心の余白を取り戻すことで、本当に大切にしたい価値観が少しずつ見えやすくなります。';
       } else if (total >= 16) {
-        totalLabel = 'バランス調整期';
-        totalMessage = 'いくつかの領域でエネルギーの偏りが見えています。小さな一歩を整えることで、隣り合うカテゴリーにも良い連鎖が広がりやすい状態です。';
+        totalLabel = '小さな違和感を言葉にして、流れを整えること';
+        totalMessage = 'いくつかの領域で、エネルギーのゆらぎが見えています。大きく変えようとしなくても大丈夫です。まずは小さな違和感を言葉にすることから始めると、隣り合うカテゴリーにもやさしい連鎖が広がっていきます。';
       } else if (total <= 7) {
-        totalLabel = '安定と拡張期';
-        totalMessage = '全体のバランスは比較的安定しています。次は「整える」だけでなく、理想のビジョンに向けて軽やかに広げていくフェーズです。';
+        totalLabel = '安定した虹を、未来へ軽やかに広げること';
+        totalMessage = '全体のバランスは比較的クリアで、今のあなたを支える土台が整っています。ここからは整えるだけでなく、理想のビジョンに向けて、好き・挑戦・つながりを少しずつ広げていくフェーズです。';
       }
 
       return { scored, top, second, third, total, opposite, next, pairTheme, totalLabel, totalMessage };
@@ -397,7 +302,7 @@
     function CategoryCircleChart({ scored }) {
       const ordered = categories.map(function(c) {
         const found = scored.find(function(s) { return s.id === c.id; });
-        return Object.assign({}, c, { score: found ? found.score : 0 });
+        return Object.assign({}, c, { score: found ? found.score : 0, percent: found ? found.percent : 0 });
       });
 
       const center = 190;
@@ -408,10 +313,7 @@
 
       function point(index, radius) {
         const angle = (angleOffset + index * 45) * Math.PI / 180;
-        return {
-          x: center + Math.cos(angle) * radius,
-          y: center + Math.sin(angle) * radius
-        };
+        return { x: center + Math.cos(angle) * radius, y: center + Math.sin(angle) * radius };
       }
 
       const radarPoints = ordered.map(function(cat, i) {
@@ -425,298 +327,230 @@
       return (
         <div className="mb-10">
           <div className="text-center mb-6">
-            <p className="text-xs font-bold text-slate-400 tracking-[0.25em] mb-3">INNER BIAS MAP</p>
-            <p className="text-sm text-slate-500 leading-relaxed">
-              ゲージが高い領域ほど、あなた本来の虹を隠している“もやもや”のサインです。
-            </p>
+            <p className="text-xs font-bold text-slate-400 tracking-[0.25em] mb-3">INNER RAINBOW MAP</p>
+            <p className="text-sm text-slate-500 leading-relaxed">ゲージが高い領域ほど、まだ言葉になっていない“もやもや”のサインです。</p>
           </div>
 
           <div className="relative w-full max-w-[430px] mx-auto">
-            <svg viewBox="0 0 380 380" className="w-full h-auto overflow-visible" aria-label="Inner Bias Map">
+            <svg viewBox="0 0 380 380" className="w-full h-auto overflow-visible" aria-label="Inner Rainbow Map">
               <defs>
-                <linearGradient id="rainbowStroke" x1="80" y1="80" x2="300" y2="300">
+                <linearGradient id="rainbowStroke" x1="70" y1="70" x2="310" y2="310" gradientUnits="userSpaceOnUse">
                   <stop offset="0%" stopColor="#FF9AA2" />
-                  <stop offset="14%" stopColor="#FFB347" />
-                  <stop offset="28%" stopColor="#FFD93D" />
-                  <stop offset="42%" stopColor="#6BCB77" />
-                  <stop offset="56%" stopColor="#4ECDC4" />
-                  <stop offset="70%" stopColor="#7ED6DF" />
-                  <stop offset="84%" stopColor="#5DADE2" />
+                  <stop offset="15%" stopColor="#FFB347" />
+                  <stop offset="30%" stopColor="#FFD93D" />
+                  <stop offset="45%" stopColor="#6BCB77" />
+                  <stop offset="60%" stopColor="#4ECDC4" />
+                  <stop offset="75%" stopColor="#5DADE2" />
                   <stop offset="100%" stopColor="#C8A2C8" />
                 </linearGradient>
-                <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%" stopColor="#ffffff" stopOpacity=".95" />
-                  <stop offset="70%" stopColor="#ffffff" stopOpacity=".62" />
-                  <stop offset="100%" stopColor="#e0f2fe" stopOpacity=".22" />
+                <radialGradient id="softCenter" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor="rgba(255,255,255,.92)" />
+                  <stop offset="100%" stopColor="rgba(255,255,255,.22)" />
                 </radialGradient>
               </defs>
 
-              {[1,2,3,4,5].map(function(n) {
-                return <circle key={n} cx={center} cy={center} r={20 + n * 13} fill="none" stroke="#e8edf3" strokeWidth="1" strokeDasharray="3 5" />;
+              <circle cx={center} cy={center} r={chartR + 24} fill="url(#softCenter)" stroke="url(#rainbowStroke)" strokeWidth="1.5" opacity=".92" />
+              <circle cx={center} cy={center} r={chartR} fill="none" stroke="url(#rainbowStroke)" strokeWidth="1.2" opacity=".50" />
+              <circle cx={center} cy={center} r={chartR * .66} fill="none" stroke="#e8edf3" strokeWidth="1" opacity=".75" />
+              <circle cx={center} cy={center} r={chartR * .33} fill="none" stroke="#e8edf3" strokeWidth="1" opacity=".75" />
+
+              {oppositeLines.map(function(pair, i) {
+                const a = point(pair[0], chartR + 16);
+                const b = point(pair[1], chartR + 16);
+                return <line key={i} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="#e2e8f0" strokeWidth="1" opacity=".55" />;
               })}
 
-              {ordered.map(function(cat, i) {
-                const p1 = point(i, 24);
-                const p2 = point(i, chartR);
-                return <line key={cat.id} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke="#d7dde7" strokeWidth="1" strokeDasharray="4 5" />;
-              })}
-
-              {oppositeLines.map(function(pair, idx) {
-                const a = point(pair[0], chartR);
-                const b = point(pair[1], chartR);
-                return <line key={idx} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="#cbd5e1" strokeWidth="1" strokeDasharray="5 6" opacity=".7" />;
-              })}
-
-              <polygon points={radarPoints} fill="rgba(203,213,225,.22)" stroke="rgba(148,163,184,.55)" strokeWidth="1.15" opacity=".95" />
-
-              {ordered.map(function(cat, i) {
-                const p = point(i, 20 + (cat.score / 5) * radarMaxR);
-                return <circle key={cat.id + '-dot'} cx={p.x} cy={p.y} r="4" fill={cat.color} stroke="white" strokeWidth="2" />;
-              })}
-
-              <circle cx={center} cy={center} r={chartR} fill="none" stroke="url(#rainbowStroke)" strokeWidth="3" opacity=".95" />
-
-              <circle cx={center} cy={center} r="48" fill="url(#centerGlow)" stroke="rgba(255,255,255,.9)" strokeWidth="1" />
-              <text x={center} y={center - 12} textAnchor="middle" fill="#94a3b8" fontSize="10" fontWeight="900" letterSpacing="3">INNER</text>
-              <text x={center} y={center + 4} textAnchor="middle" fill="#94a3b8" fontSize="10" fontWeight="900" letterSpacing="3">BIAS</text>
-              <text x={center} y={center + 20} textAnchor="middle" fill="#94a3b8" fontSize="10" fontWeight="900" letterSpacing="3">MAP</text>
+              <polygon points={radarPoints} fill="rgba(255,154,162,.13)" stroke="url(#rainbowStroke)" strokeWidth="2" opacity=".95" />
 
               {ordered.map(function(cat, i) {
                 const p = point(i, iconR);
+                const dot = point(i, 20 + (cat.score / 5) * radarMaxR);
                 return (
-                  <g key={cat.id + '-label'} transform={'translate(' + p.x + ' ' + p.y + ')'}>
-                    <circle r="27" fill="rgba(255,255,255,.82)" stroke="rgba(255,255,255,.96)" strokeWidth="1.2" />
-                    <g transform="translate(-18 -18) scale(.12)">
-                      <IconGlyph id={cat.id} color={cat.color} />
-                    </g>
-                    <text y="42" textAnchor="middle" fill={cat.color} fontSize="10" fontWeight="900" letterSpacing="1.2">{cat.jp}</text>
-                    <text y="56" textAnchor="middle" fill="#94a3b8" fontSize="10" fontWeight="700">{cat.score}/5</text>
+                  <g key={cat.id}>
+                    <line x1={center} y1={center} x2={p.x} y2={p.y} stroke="#e2e8f0" strokeWidth="1" opacity=".35" />
+                    <circle cx={dot.x} cy={dot.y} r="4" fill={cat.color} opacity=".9" />
+                    <foreignObject x={p.x - 30} y={p.y - 30} width="60" height="60">
+                      <div className="w-[60px] h-[60px] rounded-full bg-white/60 border border-white/80 backdrop-blur-md flex items-center justify-center shadow-sm">
+                        <CategoryIcon id={cat.id} color={cat.color} size={34} />
+                      </div>
+                    </foreignObject>
                   </g>
                 );
               })}
             </svg>
           </div>
-
-          <div className="mt-8 bg-white/60 border border-white rounded-2xl p-4 text-center">
-            <p className="text-xs text-slate-500 leading-relaxed">
-              外側の円は8カテゴリーの循環、点線は対面テーマを表します。高く出た領域は「悪い場所」ではなく、あなたの虹をもう一度輝かせる入口です。
-            </p>
-          </div>
-        </div>
-      );
-    }
-
-    function TopCircle() {
-      const center = 190;
-      const iconR = 145;
-
-      function point(index, radius) {
-        const angle = (-90 + index * 45) * Math.PI / 180;
-        return {
-          x: center + Math.cos(angle) * radius,
-          y: center + Math.sin(angle) * radius
-        };
-      }
-
-      return (
-        <div className="relative w-full max-w-[390px] mx-auto mb-12">
-          <svg viewBox="0 0 380 380" className="w-full h-auto overflow-visible" aria-label="ハッピーライフレインボーシート">
-            <defs>
-              <linearGradient id="topRainbowCircle" x1="70" y1="70" x2="310" y2="310">
-                <stop offset="0%" stopColor="#FF9AA2" stopOpacity=".75" />
-                <stop offset="14%" stopColor="#FFB347" stopOpacity=".75" />
-                <stop offset="28%" stopColor="#FFD93D" stopOpacity=".75" />
-                <stop offset="42%" stopColor="#6BCB77" stopOpacity=".75" />
-                <stop offset="56%" stopColor="#4ECDC4" stopOpacity=".75" />
-                <stop offset="70%" stopColor="#7ED6DF" stopOpacity=".75" />
-                <stop offset="84%" stopColor="#5DADE2" stopOpacity=".75" />
-                <stop offset="100%" stopColor="#C8A2C8" stopOpacity=".75" />
-              </linearGradient>
-              <radialGradient id="topCenterGlow" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="#ffffff" stopOpacity=".96" />
-                <stop offset="72%" stopColor="#ffffff" stopOpacity=".72" />
-                <stop offset="100%" stopColor="#fdf2f8" stopOpacity=".28" />
-              </radialGradient>
-            </defs>
-
-            <circle cx={center} cy={center} r="112" fill="rgba(255,255,255,.25)" stroke="url(#topRainbowCircle)" strokeWidth="2" opacity=".78" />
-            <circle cx={center} cy={center} r="58" fill="url(#topCenterGlow)" stroke="rgba(255,255,255,.9)" strokeWidth="1.2" />
-            <text x={center} y={center - 18} textAnchor="middle" fill="#94a3b8" fontSize="10" fontWeight="900" letterSpacing="3">HAPPY</text>
-            <text x={center} y={center + 1} textAnchor="middle" fill="#94a3b8" fontSize="10" fontWeight="900" letterSpacing="3">LIFE</text>
-            <text x={center} y={center + 20} textAnchor="middle" fill="#94a3b8" fontSize="10" fontWeight="900" letterSpacing="3">RAINBOW</text>
-
-            {categories.map(function(cat, i) {
-              const p = point(i, iconR);
-              return (
-                <g key={cat.id + '-top'} transform={'translate(' + p.x + ' ' + p.y + ')'}>
-                  <circle r="31" fill="rgba(255,255,255,.82)" stroke="rgba(255,255,255,.96)" strokeWidth="1.2" />
-                  <g transform="translate(-21 -22) scale(.14)">
-                    <IconGlyph id={cat.id} color={cat.color} />
-                  </g>
-                  <text y="48" textAnchor="middle" fill={cat.color} fontSize="10" fontWeight="900" letterSpacing="1.2">{cat.jp}</text>
-                </g>
-              );
-            })}
-          </svg>
         </div>
       );
     }
 
     function App() {
-      const [step, setStep] = useState('welcome');
-      const [qIdx, setQIdx] = useState(0);
-      const [scores, setScores] = useState({});
+      const [step, setStep] = useState('cover');
+      const [answers, setAnswers] = useState([]);
+      const qIdx = answers.length;
+      const catIdx = Math.floor(qIdx / 5);
+      const currentCat = categories[catIdx];
+      const currentQuestionIndex = qIdx % 5;
+      const currentChoices = currentCat ? answerChoices[currentCat.id][currentQuestionIndex] : null;
+      const progress = Math.round((answers.length / 40) * 100);
 
-      const totalQs = categories.length * 5;
-      const currentCat = categories[Math.floor(qIdx / 5)] || categories[0];
-      const progress = ((qIdx + 1) / totalQs) * 100;
-      const insight = generateInsight(scores);
-
-      function handleAnswer(val) {
-        const nextScores = Object.assign({}, scores, {
-          [currentCat.id]: (scores[currentCat.id] || 0) + val
-        });
-
-        setScores(nextScores);
-
-        if (qIdx < totalQs - 1) {
-          setQIdx(qIdx + 1);
-        } else {
+      function handleAnswer(value) {
+        const nextAnswers = answers.concat(value);
+        if (nextAnswers.length >= 40) {
+          setAnswers(nextAnswers);
           setStep('result');
+        } else {
+          setAnswers(nextAnswers);
         }
       }
 
-      if (step === 'welcome') return (
-        <main className="glass-card rounded-[3rem] p-9 sm:p-16 text-center text-reveal overflow-hidden relative">
-          <div className="absolute top-0 left-0 w-full rainbow-line"></div>
+      function reset() {
+        setAnswers([]);
+        setStep('cover');
+      }
 
-          <div className="flex justify-center mb-8">
-            <img src="logo.png" alt="ハッピーライフレインボー™︎" className="h-24 object-contain" />
+      if (step === 'cover') return (
+        <main className="glass-card rounded-[3rem] p-6 sm:p-12 text-center text-reveal relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full rainbow-line"></div>
+          <div className="pt-7">
+            <p className="text-xs font-bold tracking-[0.36em] text-slate-400 uppercase mb-4">Happy Life Rainbow™</p>
+            <h1 className="serif text-3xl sm:text-5xl font-light tracking-[0.06em] leading-tight text-slate-800 mb-4">心の虹<br className="sm:hidden" />バランスチェック</h1>
+            <p className="text-sm sm:text-base text-slate-500 leading-loose mb-8">8つの視点で見える、いまのわたしの状態。<br />もやもやは、まだ言葉になっていないサインです。</p>
           </div>
 
-          <p className="text-[11px] tracking-[0.35em] text-[#c5a059] font-bold uppercase mb-5">Potential Bias Map</p>
+          <section className="cover-orbit mb-10" aria-label="8 categories">
+            <div className="absolute inset-[28%] rounded-full border border-white/50 bg-white/20 backdrop-blur-sm"></div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-36 h-36 sm:w-44 sm:h-44 rounded-full bg-white/46 border border-white/70 backdrop-blur-xl shadow-sm flex items-center justify-center p-8">
+                <img src="/mnt/data/logo.png" alt="Happy Life Rainbow Logo" className="w-full h-full object-contain opacity-90" />
+              </div>
+            </div>
+            {categories.map(function(cat, i) {
+              return <div key={cat.id} className="orbit-icon" style={{ '--angle': (i * 45) + 'deg', '--c': cat.color }} title={cat.jp}><CategoryIcon id={cat.id} color={cat.color} size={40} /></div>;
+            })}
+          </section>
 
-          <h1 className="text-2xl sm:text-4xl font-light tracking-[0.18em] text-slate-800 mb-8">
-            ハッピーライフレインボー™︎
-          </h1>
-
-          <p className="text-slate-500 text-sm sm:text-base leading-loose mb-10 max-w-2xl mx-auto">
-            人生を8つのカテゴリーから見つめ、今のあなたに起きている小さなサインと、未来へつながる一歩を可視化します。
-          </p>
-
-          <TopCircle />
-
-          <button onClick={() => setStep('quiz')} className="w-full max-w-sm py-5 btn-rainbow text-white rounded-full text-xs font-bold shadow-xl">
-            虹をひらく
-          </button>
-
-          <p className="serif mt-10 text-sm tracking-[0.35em] text-slate-400 italic">心に虹のかかる毎日を。</p>
+          <button onClick={() => setStep('quiz')} className="btn-rainbow text-white font-black rounded-full px-10 py-4 shadow-lg">虹をひらく</button>
+          <p className="mt-5 text-xs text-slate-400">答えは正解・不正解ではなく、今の感覚を知るためのものです。</p>
         </main>
       );
 
       if (step === 'quiz') return (
-        <main className="glass-card rounded-[3rem] p-8 sm:p-14 text-reveal overflow-hidden relative">
-          <div className="absolute top-0 left-0 h-1 transition-all duration-700" style={{ width: progress + '%', backgroundColor: currentCat.color }}></div>
+        <main className="glass-card rounded-[3rem] p-6 sm:p-12 text-reveal min-h-[620px] flex flex-col relative overflow-hidden">
+          <div className="absolute top-0 left-0 h-1 bg-gradient-to-r from-pink-300 via-yellow-300 to-sky-300 transition-all" style={{ width: progress + '%' }}></div>
 
-          <div className="flex justify-between items-end mb-10">
-            <div>
-              <p className="text-[10px] tracking-[0.35em] text-slate-400 font-bold mb-2 uppercase">{currentCat.name}</p>
-              <h2 className="text-2xl font-bold flex items-center gap-4" style={{ color: currentCat.color }}>
-                <span className="w-16 h-16 rounded-full bg-white/65 border border-white flex items-center justify-center">
-                  <CategoryIcon id={currentCat.id} color={currentCat.color} size={44} />
-                </span>
-                {currentCat.jp}
-              </h2>
+          <header className="mb-12 pt-4">
+            <div className="flex items-center justify-between gap-4 mb-8">
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-3xl theme-card flex items-center justify-center" style={{ '--c': currentCat.color }}><CategoryIcon id={currentCat.id} color={currentCat.color} size={42} /></div>
+                <div>
+                  <p className="text-xs font-bold tracking-[0.25em] text-slate-400">{currentCat.name}</p>
+                  <h2 className="text-2xl font-black" style={{ color: currentCat.color }}>{currentCat.jp}</h2>
+                </div>
+              </div>
+              <p className="text-xs font-bold text-slate-300">{answers.length + 1} / 40</p>
             </div>
-            <p className="text-xs font-mono text-slate-300">{qIdx + 1} / {totalQs}</p>
-          </div>
 
-          <div className="soft-card rounded-[2rem] p-6 mb-10">
-            <p className="text-xs text-slate-400 font-bold tracking-widest mb-2">この領域のテーマ</p>
-            <p className="text-sm text-slate-600 leading-relaxed">{currentCat.role}</p>
-          </div>
+            <div className="theme-card rounded-[2rem] p-5" style={{ '--c': currentCat.color }}>
+              <p className="text-xs font-bold tracking-[0.16em] mb-2" style={{ color: currentCat.color }}>この領域のテーマ</p>
+              <p className="text-sm text-slate-600 leading-relaxed">{currentCat.role}</p>
+            </div>
+          </header>
 
-          <h3 className="text-xl sm:text-2xl font-light leading-relaxed text-slate-700 mb-16 min-h-[110px]">
-            {currentCat.questions[qIdx % 5]}
-          </h3>
+          <div className="flex-1 flex flex-col justify-center">
+            <p className="text-xs font-bold tracking-[0.28em] text-slate-400 mb-6">QUESTION</p>
+            <h3 className="text-xl sm:text-2xl font-light leading-relaxed text-slate-700 mb-12 min-h-[110px]">{currentCat.questions[currentQuestionIndex]}</h3>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <button onClick={() => handleAnswer(1)} className="py-5 bg-white/72 hover:bg-white rounded-2xl border border-white transition-all text-sm font-bold text-slate-600 shadow-sm">はい、当てはまる</button>
-            <button onClick={() => handleAnswer(0)} className="py-5 bg-white/72 hover:bg-white rounded-2xl border border-white transition-all text-sm font-bold text-slate-600 shadow-sm">いいえ、今は違う</button>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <button onClick={() => handleAnswer(1)} className="py-5 px-5 bg-white/72 hover:bg-white rounded-2xl border border-white transition-all text-sm sm:text-base font-bold text-slate-600 shadow-sm">{currentChoices.yes}</button>
+              <button onClick={() => handleAnswer(0)} className="py-5 px-5 bg-white/72 hover:bg-white rounded-2xl border border-white transition-all text-sm sm:text-base font-bold text-slate-600 shadow-sm">{currentChoices.no}</button>
+            </div>
           </div>
         </main>
       );
+
+      const insight = analyze(answers);
 
       if (step === 'result') return (
         <main className="glass-card rounded-[3rem] p-6 sm:p-12 text-reveal max-h-[92vh] overflow-y-auto custom-scrollbar relative">
           <div className="absolute top-0 left-0 w-full rainbow-line"></div>
 
           <header className="text-center mb-14 pt-6">
-            <h2 className="text-4xl sm:text-6xl font-light tracking-[0.18em] text-transparent bg-clip-text bg-gradient-to-r from-pink-300 via-yellow-300 to-sky-300 uppercase">
-              Insight Report
-            </h2>
-            <p className="serif mt-5 text-sm tracking-[0.35em] text-slate-400 italic">心の空に、いま見えている虹。</p>
+            <p className="text-xs font-bold tracking-[0.32em] text-slate-400 uppercase mb-4">Happy Life Rainbow™</p>
+            <h2 className="text-4xl sm:text-6xl font-light tracking-[0.16em] text-transparent bg-clip-text bg-gradient-to-r from-pink-300 via-yellow-300 to-sky-300 uppercase">Insight Report</h2>
+            <p className="serif mt-5 text-sm tracking-[0.28em] text-slate-400 italic">心の空に、いま見えている虹。</p>
           </header>
+
+          <section className="soft-card rounded-[2.5rem] p-7 sm:p-10 mb-10 text-center">
+            <p className="text-sm sm:text-base text-slate-600 leading-loose">今回のチェックから、いまのあなたの内側の状態がやさしく浮かび上がってきました。<br />これは良い・悪いを判断するものではなく、整えていくヒントを見つけるためのレポートです。</p>
+          </section>
 
           <CategoryCircleChart scored={insight.scored} />
 
           <section className="soft-card rounded-[2.5rem] p-8 sm:p-10 mb-10">
-            <p className="text-xs font-bold tracking-[0.25em] text-slate-400 mb-4">OVERALL MESSAGE</p>
+            <p className="text-xs font-bold tracking-[0.25em] text-slate-400 mb-4">いまのあなたの整えポイント</p>
             <h3 className="text-2xl sm:text-3xl font-black text-slate-800 mb-5">{insight.totalLabel}</h3>
             <p className="text-slate-600 leading-loose text-sm sm:text-base">{insight.totalMessage}</p>
           </section>
 
           <section className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
             {[insight.top, insight.second, insight.third].map(function(cat, index) {
-              const level = getLevel(cat.score);
+              const level = getMoyamoyaLevel(cat.score);
               return (
-                <div key={cat.id} className="soft-card rounded-[2rem] p-6">
+                <div key={cat.id} className="theme-card rounded-[2rem] p-6" style={{ '--c': cat.color }}>
                   <div className="flex items-center justify-between mb-4">
                     <CategoryIcon id={cat.id} color={cat.color} size={38} />
                     <span className="text-xs font-black text-slate-300">0{index + 1}</span>
                   </div>
-                  <h4 className="font-black text-lg mb-2" style={{ color: cat.color }}>{cat.jp}</h4>
+                  <h4 className="font-black text-lg mb-1" style={{ color: cat.color }}>{cat.jp}</h4>
                   <p className="text-xs text-slate-400 mb-3">{cat.layer}</p>
-                  <span className={'inline-block text-[10px] font-bold border rounded-full px-3 py-1 mb-4 ' + level.badge}>{level.label} / {cat.score}個</span>
-                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">{level.tone} {cat.score >= 3 ? cat.disturbed : cat.balanced}</p>
+                  <span className={'inline-block text-[10px] font-bold border rounded-full px-3 py-1 mb-4 ' + level.badge}>もやもや指数 {cat.percent}% / {level.label}</span>
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">{level.tone}</p>
                 </div>
               );
             })}
           </section>
 
-          <section className="soft-card rounded-[2.5rem] p-8 sm:p-10 mb-10">
-            <p className="text-xs font-bold tracking-[0.25em] text-slate-400 mb-4">DEEPER THEME</p>
-            <h3 className="text-xl sm:text-2xl font-black text-slate-800 mb-5">{insight.pairTheme}</h3>
-            <p className="text-slate-600 leading-loose text-sm sm:text-base">
-              今回もっともサインが強かった「{insight.top.jp}」は、対面にある「{insight.opposite.jp}」とも響き合っています。片方だけを直すのではなく、両方の声を聞くことで、本来の願望が見えやすくなります。
-            </p>
+          <section className="space-y-5 mb-10">
+            {insight.scored.map(function(cat) {
+              const level = getMoyamoyaLevel(cat.score);
+              return (
+                <article key={cat.id} className="theme-card rounded-[2.2rem] p-6 sm:p-8" style={{ '--c': cat.color }}>
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5">
+                    <div className="flex items-center gap-4">
+                      <div className="w-14 h-14 rounded-2xl bg-white/54 border border-white/70 flex items-center justify-center"><CategoryIcon id={cat.id} color={cat.color} size={34} /></div>
+                      <div>
+                        <p className="text-xs font-bold tracking-[0.24em] text-slate-400">{cat.name}</p>
+                        <h4 className="text-xl font-black" style={{ color: cat.color }}>{cat.jp}</h4>
+                      </div>
+                    </div>
+                    <span className={'self-start sm:self-center inline-block text-[11px] font-bold border rounded-full px-3 py-1 ' + level.badge}>もやもや指数 {cat.percent}% / {level.label}</span>
+                  </div>
+                  <h5 className="serif text-lg sm:text-xl text-slate-800 mb-4">{cat.reportTitle}</h5>
+                  <p className="text-sm sm:text-base text-slate-600 leading-loose mb-4">{cat.report}</p>
+                  <p className="text-sm sm:text-base text-slate-600 leading-loose">ここから少しずつ、{cat.action}</p>
+                </article>
+              );
+            })}
           </section>
 
           <section className="soft-card rounded-[2.5rem] p-8 sm:p-10 mb-10">
-            <p className="text-xs font-bold tracking-[0.25em] text-slate-400 mb-4">NEXT RAINBOW STEP</p>
-            <h3 className="text-xl sm:text-2xl font-black text-slate-800 mb-5">まずは「{insight.top.jp}」から、やさしく整える</h3>
-            <p className="text-slate-600 leading-loose text-sm sm:text-base">
-              次に影響が広がりやすいのは、隣り合う「{insight.next.jp}」です。大きく変えようとせず、今日ひとつだけ気づいたことを言葉にするところから始めてみてください。
-            </p>
+            <p className="text-xs font-bold tracking-[0.25em] text-slate-400 mb-4">RAINBOW CONNECTION</p>
+            <h3 className="text-2xl font-black text-slate-800 mb-5">{insight.pairTheme}</h3>
+            <p className="text-slate-600 leading-loose text-sm sm:text-base">特に「{insight.top.jp}」と、その向かい側にある「{insight.opposite.jp}」の関係性には、今のあなたを整えるヒントがあります。ひとつの領域だけを変えようとせず、つながりとして眺めることで、心の虹はより自然に整っていきます。</p>
           </section>
 
-          <section className="rounded-[2.5rem] p-8 sm:p-10 mb-10 text-center border border-pink-100 bg-gradient-to-br from-pink-50/80 via-white/85 to-cyan-50/80">
-            <p className="text-xs font-bold tracking-[0.25em] text-[#ec407a] mb-4">NEXT STEP</p>
-            <h3 className="text-2xl sm:text-3xl font-black text-slate-800 mb-5">この結果の奥にある“本当の願望”を読み解く</h3>
-            <p className="text-slate-600 leading-loose text-sm sm:text-base max-w-2xl mx-auto mb-8">
-              結果はゴールではなく、あなたの人生が動き出す入口です。初回無料カウンセリングでは、今回の結果をもとに「なぜそうなっているのか」と「どこから整えると変化が起きやすいのか」を一緒に読み解きます。
-            </p>
-            <button onClick={() => { window.location.href = bookingUrl; }} className="w-full max-w-md py-5 btn-rainbow text-white rounded-full text-sm font-black shadow-xl">初回無料カウンセリングを予約する</button>
+          <section className="text-center rounded-[2.5rem] p-8 sm:p-10 bg-gradient-to-r from-pink-50/70 via-yellow-50/70 to-sky-50/70 border border-white/80 mb-8">
+            <p className="serif text-xl sm:text-2xl text-slate-700 leading-loose mb-5">もやもやは、変化の入り口です。</p>
+            <p className="text-sm text-slate-500 leading-loose">いま感じている違和感や揺らぎは、これからの自分にとって大切なヒントになります。<br />心に虹のかかる毎日を。
+ここから、あなたのペースで整えていきましょう。</p>
           </section>
 
-          <footer className="pt-8 border-t border-white text-center">
-            <button onClick={() => window.location.reload()} className="text-slate-300 text-[10px] font-bold tracking-[0.3em] uppercase hover:text-slate-500 transition-all mb-8">Restart Journey</button>
-            <p className="serif text-sm tracking-[0.45em] text-slate-400 font-light italic">心に虹のかかる毎日を。</p>
-          </footer>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <button onClick={reset} className="py-4 rounded-full bg-white/72 hover:bg-white border border-white text-slate-500 font-bold transition-all">もう一度チェックする</button>
+            <a href={bookingUrl} className="btn-rainbow text-center py-4 rounded-full text-white font-black shadow-lg">無料セッションへ進む</a>
+          </div>
         </main>
       );
-
-      return null;
     }
 
     ReactDOM.render(<App />, document.getElementById('root'));
