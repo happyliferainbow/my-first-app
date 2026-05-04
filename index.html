@@ -122,14 +122,14 @@
 
       const glyphs = {
         mental: (
-          <g style={{ color }}>
+          <g color={color}>
             <path {...line} d="M150 220 C105 184 70 154 78 114 C84 83 122 75 150 109 C178 75 216 83 222 114 C230 154 195 184 150 220Z" />
             <circle cx="150" cy="150" r="5" fill="currentColor" />
             <path {...thin} d="M95 78 L82 58 M125 62 L118 38 M150 55 L150 28 M175 62 L182 38 M205 78 L218 58" />
           </g>
         ),
         health: (
-          <g style={{ color }}>
+          <g color={color}>
             <path {...line} d="M55 178 C95 138 125 218 150 178 C175 138 205 218 245 178" />
             <path {...line} d="M55 216 C95 176 125 256 150 216 C175 176 205 256 245 216" />
             <circle {...line} cx="150" cy="122" r="22" />
@@ -138,7 +138,7 @@
           </g>
         ),
         work: (
-          <g style={{ color }}>
+          <g color={color}>
             <path {...line} d="M50 205 H250" />
             <path {...line} d="M105 205 A45 45 0 0 1 195 205" />
             <path {...thin} d="M150 42 V130 M150 42 L132 62 M150 42 L168 62" />
@@ -146,7 +146,7 @@
           </g>
         ),
         money: (
-          <g style={{ color }}>
+          <g color={color}>
             <path {...line} d="M72 176 C72 116 116 74 172 84 C225 94 246 150 221 195 C195 241 132 245 96 207" />
             <path {...thin} d="M205 84 C218 56 235 44 260 40 C264 68 252 88 225 100" />
             <path {...thin} d="M198 86 C183 64 161 58 140 62 C145 88 166 101 195 100" />
@@ -155,7 +155,7 @@
           </g>
         ),
         learning: (
-          <g style={{ color }}>
+          <g color={color}>
             <path {...line} d="M48 180 C92 162 128 177 150 236 C172 177 208 162 252 180" />
             <path {...line} d="M65 212 C104 194 131 205 150 236 C169 205 196 194 235 212" />
             <path {...line} d="M82 242 C115 224 138 229 150 236 C162 229 185 224 218 242" />
@@ -163,14 +163,14 @@
           </g>
         ),
         hobby: (
-          <g style={{ color }}>
+          <g color={color}>
             <path {...line} d="M101 218 C57 181 69 91 135 76 C196 62 206 126 178 160 C150 194 93 177 122 130 C148 88 217 112 197 178 C184 220 121 235 103 184 C88 141 161 125 172 172 C182 215 222 225 247 193" />
             <path {...thin} d="M228 66 C234 91 243 100 268 106 C243 112 234 121 228 146 C222 121 213 112 188 106 C213 100 222 91 228 66Z" />
             <circle cx="236" cy="164" r="5" fill="currentColor" />
           </g>
         ),
         living: (
-          <g style={{ color }}>
+          <g color={color}>
             <path {...line} d="M55 130 L150 48 L245 130" />
             <path {...line} d="M75 135 V207 C75 238 100 248 128 248 H172 C200 248 225 238 225 207 V135" />
             <path {...thin} d="M118 186 C130 205 170 205 182 186" />
@@ -178,7 +178,7 @@
           </g>
         ),
         relation: (
-          <g style={{ color }}>
+          <g color={color}>
             <circle {...line} cx="117" cy="158" r="72" />
             <circle {...line} cx="183" cy="158" r="72" />
             <path {...thin} d="M150 187 C132 172 125 160 129 148 C133 136 146 135 150 146 C154 135 167 136 171 148 C175 160 168 172 150 187Z" />
@@ -486,7 +486,7 @@
                 return (
                   <g key={cat.id + '-label'} transform={'translate(' + p.x + ' ' + p.y + ')'}>
                     <circle r="27" fill="rgba(255,255,255,.82)" stroke="rgba(255,255,255,.96)" strokeWidth="1.2" />
-                    <g transform="translate(-14 -20) scale(.095)">
+                    <g transform="translate(-18 -18) scale(.12)">
                       <IconGlyph id={cat.id} color={cat.color} />
                     </g>
                     <text y="42" textAnchor="middle" fill={cat.color} fontSize="10" fontWeight="900" letterSpacing="1.2">{cat.jp}</text>
@@ -507,32 +507,57 @@
     }
 
     function TopCircle() {
+      const center = 190;
+      const iconR = 145;
+
+      function point(index, radius) {
+        const angle = (-90 + index * 45) * Math.PI / 180;
+        return {
+          x: center + Math.cos(angle) * radius,
+          y: center + Math.sin(angle) * radius
+        };
+      }
+
       return (
-        <div className="relative w-[320px] h-[320px] mx-auto mb-12 max-w-full">
-          <div className="absolute inset-8 rounded-full border border-white/80 bg-white/25 shadow-inner"></div>
-          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-pink-100/30 via-yellow-50/20 to-cyan-100/30 blur-2xl"></div>
+        <div className="relative w-full max-w-[390px] mx-auto mb-12">
+          <svg viewBox="0 0 380 380" className="w-full h-auto overflow-visible" aria-label="ハッピーライフレインボーシート">
+            <defs>
+              <linearGradient id="topRainbowCircle" x1="70" y1="70" x2="310" y2="310">
+                <stop offset="0%" stopColor="#FF9AA2" stopOpacity=".75" />
+                <stop offset="14%" stopColor="#FFB347" stopOpacity=".75" />
+                <stop offset="28%" stopColor="#FFD93D" stopOpacity=".75" />
+                <stop offset="42%" stopColor="#6BCB77" stopOpacity=".75" />
+                <stop offset="56%" stopColor="#4ECDC4" stopOpacity=".75" />
+                <stop offset="70%" stopColor="#7ED6DF" stopOpacity=".75" />
+                <stop offset="84%" stopColor="#5DADE2" stopOpacity=".75" />
+                <stop offset="100%" stopColor="#C8A2C8" stopOpacity=".75" />
+              </linearGradient>
+              <radialGradient id="topCenterGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="#ffffff" stopOpacity=".96" />
+                <stop offset="72%" stopColor="#ffffff" stopOpacity=".72" />
+                <stop offset="100%" stopColor="#fdf2f8" stopOpacity=".28" />
+              </radialGradient>
+            </defs>
 
-          {categories.map(function(cat, i) {
-            const angle = (-90 + i * 45) * Math.PI / 180;
-            const r = 126;
-            const x = 160 + Math.cos(angle) * r;
-            const y = 160 + Math.sin(angle) * r;
+            <circle cx={center} cy={center} r="112" fill="rgba(255,255,255,.25)" stroke="url(#topRainbowCircle)" strokeWidth="2" opacity=".78" />
+            <circle cx={center} cy={center} r="58" fill="url(#topCenterGlow)" stroke="rgba(255,255,255,.9)" strokeWidth="1.2" />
+            <text x={center} y={center - 18} textAnchor="middle" fill="#94a3b8" fontSize="10" fontWeight="900" letterSpacing="3">HAPPY</text>
+            <text x={center} y={center + 1} textAnchor="middle" fill="#94a3b8" fontSize="10" fontWeight="900" letterSpacing="3">LIFE</text>
+            <text x={center} y={center + 20} textAnchor="middle" fill="#94a3b8" fontSize="10" fontWeight="900" letterSpacing="3">RAINBOW</text>
 
-            return (
-              <div key={cat.id} className="absolute -translate-x-1/2 -translate-y-1/2 text-center" style={{ left: x, top: y }}>
-                <div className="w-16 h-16 rounded-full bg-white/78 border border-white shadow-sm flex items-center justify-center mx-auto mb-1">
-                  <CategoryIcon id={cat.id} color={cat.color} size={44} />
-                </div>
-                <span className="text-[10px] font-black tracking-widest" style={{ color: cat.color }}>{cat.jp}</span>
-              </div>
-            );
-          })}
-
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="w-24 h-24 rounded-full bg-white/70 border border-white shadow-sm flex items-center justify-center text-center">
-              <p className="text-[9px] tracking-[0.26em] text-slate-400 font-black leading-relaxed">HAPPY<br />LIFE<br />RAINBOW</p>
-            </div>
-          </div>
+            {categories.map(function(cat, i) {
+              const p = point(i, iconR);
+              return (
+                <g key={cat.id + '-top'} transform={'translate(' + p.x + ' ' + p.y + ')'}>
+                  <circle r="31" fill="rgba(255,255,255,.82)" stroke="rgba(255,255,255,.96)" strokeWidth="1.2" />
+                  <g transform="translate(-21 -22) scale(.14)">
+                    <IconGlyph id={cat.id} color={cat.color} />
+                  </g>
+                  <text y="48" textAnchor="middle" fill={cat.color} fontSize="10" fontWeight="900" letterSpacing="1.2">{cat.jp}</text>
+                </g>
+              );
+            })}
+          </svg>
         </div>
       );
     }
