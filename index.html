@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>レインボーバランス | Happy Life Rainbow™</title>
+  <title>レインボーバランスファインド | Happy Life Rainbow™</title>
 
   <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
@@ -11,7 +11,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200;400;700&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap');
 
     :root {
       --mental: #FF9AA2;
@@ -40,9 +40,9 @@
       inset: 0;
       z-index: -1;
       background:
-        radial-gradient(circle at 15% 12%, rgba(255,154,162,.20), transparent 28%),
-        radial-gradient(circle at 88% 16%, rgba(126,214,223,.22), transparent 30%),
-        radial-gradient(circle at 50% 90%, rgba(107,203,119,.14), transparent 32%),
+        radial-gradient(circle at 15% 12%, rgba(255,154,162,.22), transparent 28%),
+        radial-gradient(circle at 88% 16%, rgba(126,214,223,.23), transparent 30%),
+        radial-gradient(circle at 50% 90%, rgba(107,203,119,.15), transparent 32%),
         linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
     }
 
@@ -54,7 +54,29 @@
       box-shadow: 0 34px 82px rgba(31,41,55,.075);
     }
 
-    .serif { font-family: 'Noto Serif JP', serif; }
+    .serif {
+      font-family: 'Noto Serif JP', serif;
+      font-weight: 600;
+    }
+
+    .brand-title {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 300;
+      letter-spacing: .055em;
+      line-height: 1.12;
+      white-space: nowrap;
+      color: transparent;
+      background: linear-gradient(90deg, var(--mental), var(--health), var(--work), var(--money), var(--learning), var(--hobby), var(--living), var(--relation));
+      -webkit-background-clip: text;
+      background-clip: text;
+    }
+
+    .brand-subcopy {
+      font-family: 'Noto Serif JP', serif;
+      font-weight: 500;
+      letter-spacing: .07em;
+    }
+
     .text-reveal { animation: textReveal .9s cubic-bezier(.16, 1, .3, 1) both; }
 
     @keyframes textReveal {
@@ -157,6 +179,7 @@
     @media (max-width: 520px) {
       body { align-items: flex-start; padding: 12px !important; }
       .glass-card { border-radius: 2rem !important; }
+      .brand-title { font-size: 1.35rem; letter-spacing: .015em; }
       .cover-orbit { width: min(82vw, 310px); height: min(82vw, 310px); margin-bottom: 1.5rem; }
       .orbit-icon {
         transform: translate(-50%, -50%) rotate(var(--angle)) translateY(-116px) rotate(calc(-1 * var(--angle)));
@@ -168,6 +191,7 @@
     }
 
     @media (max-width: 380px) {
+      .brand-title { font-size: 1.18rem; }
       .cover-orbit { width: 290px; height: 290px; }
       .orbit-icon {
         transform: translate(-50%, -50%) rotate(var(--angle)) translateY(-106px) rotate(calc(-1 * var(--angle)));
@@ -200,14 +224,8 @@
     const bookingUrl = 'https://example.com/free-session';
 
     const colors = {
-      mental: '#FF9AA2',
-      health: '#FFB347',
-      work: '#FFD93D',
-      money: '#6BCB77',
-      learning: '#4ECDC4',
-      hobby: '#7ED6DF',
-      living: '#5DADE2',
-      relation: '#C8A2C8'
+      mental: '#FF9AA2', health: '#FFB347', work: '#FFD93D', money: '#6BCB77',
+      learning: '#4ECDC4', hobby: '#7ED6DF', living: '#5DADE2', relation: '#C8A2C8'
     };
 
     function hexToRgba(hex, alpha) {
@@ -235,13 +253,7 @@
     }
 
     function CategoryIcon({ id, color, size = 44 }) {
-      return (
-        <span className="hlr-icon inline-flex items-center justify-center">
-          <svg viewBox="0 0 300 300" width={size} height={size} role="img" aria-label={id + ' icon'}>
-            <IconGlyph id={id} color={color} />
-          </svg>
-        </span>
-      );
+      return <span className="hlr-icon inline-flex items-center justify-center"><svg viewBox="0 0 300 300" width={size} height={size} role="img" aria-label={id + ' icon'}><IconGlyph id={id} color={color} /></svg></span>;
     }
 
     const categories = [
@@ -256,62 +268,14 @@
     ];
 
     const answerChoices = {
-      mental: [
-        ['どこかブレーキを感じる', '自然と前向きになる'],
-        ['自分を責めたくなる感覚', '外の要因に目が向く感覚'],
-        ['足りなさに意識が向く', '満たされている感覚がある'],
-        ['受け取るのが少しこわい', 'そのまま受け取れてうれしい'],
-        ['周りを優先したくなる', '自分の気持ちを大切にしたくなる']
-      ],
-      health: [
-        ['つい無理してしまう感覚', '自分を労われている感覚'],
-        ['後回しにしている感覚', '大切に扱えている感覚'],
-        ['休むことに少し抵抗がある', '安心して休める'],
-        ['整っていない違和感がある', '流れが整っている感覚'],
-        ['まだ頑張れると思ってしまう', '早めに整えたくなる']
-      ],
-      work: [
-        ['どこかズレを感じる', 'しっくりきている感覚'],
-        ['難しそうと感じる', 'やってみたい気持ちが湧く'],
-        ['評価を気にしてしまう', '自分らしさを出せている'],
-        ['不安が先にくる', '少しワクワクする'],
-        ['力を出しきれていない感覚', '自然に活かせている感覚']
-      ],
-      money: [
-        ['不安や制限を感じる', '安心や広がりを感じる'],
-        ['どこか遠慮してしまう', '受け取っていいと感じる'],
-        ['少し話しにくい感覚', '自然に話せる感覚'],
-        ['守ることを優先したくなる', '広げる選択をしたくなる'],
-        ['受け取るのに抵抗がある', '素直に受け取れる']
-      ],
-      learning: [
-        ['一歩が少し重い感覚', '軽く始められそうな感覚'],
-        ['失敗が気になる', '試すことが楽しみ'],
-        ['準備しないと不安', 'まずやってみたい'],
-        ['結果が気になりすぎる', '過程も楽しめる'],
-        ['やらなきゃという感覚', 'やりたいという感覚']
-      ],
-      hobby: [
-        ['楽しみを後回しにしている', '楽しみを感じられている'],
-        ['どこか遠慮してしまう', '素直に楽しめる'],
-        ['やるべきことを優先してしまう', '好きな時間も大切にできる'],
-        ['少し罪悪感がある', '安心して楽しめる'],
-        ['ワクワクが眠っている', '今も動いている感覚']
-      ],
-      living: [
-        ['落ち着かない感覚がある', 'ほっとできる感覚がある'],
-        ['余白が足りない感覚', 'ゆとりを感じられる'],
-        ['整えたい気持ちはある', 'すでに心地よい'],
-        ['安心できる場所が少ない', '安心できる場所がある'],
-        ['どこから整えればいいか迷う', '整えたい場所が見えている']
-      ],
-      relation: [
-        ['本音を抑えてしまう感覚', '自然に伝えられる感覚'],
-        ['自分で抱えたくなる', '人に頼れる感覚'],
-        ['相手を優先しがち', '自分も大切にできている'],
-        ['お願いや断るのがこわい', '必要な時に伝えられる'],
-        ['距離感に迷う', '心地よい距離がある']
-      ]
+      mental: [['どこかブレーキを感じる', '自然と前向きになる'], ['自分を責めたくなる感覚', '外の要因に目が向く感覚'], ['足りなさに意識が向く', '満たされている感覚がある'], ['受け取るのが少しこわい', 'そのまま受け取れてうれしい'], ['周りを優先したくなる', '自分の気持ちを大切にしたくなる']],
+      health: [['つい無理してしまう感覚', '自分を労われている感覚'], ['後回しにしている感覚', '大切に扱えている感覚'], ['休むことに少し抵抗がある', '安心して休める'], ['整っていない違和感がある', '流れが整っている感覚'], ['まだ頑張れると思ってしまう', '早めに整えたくなる']],
+      work: [['どこかズレを感じる', 'しっくりきている感覚'], ['難しそうと感じる', 'やってみたい気持ちが湧く'], ['評価を気にしてしまう', '自分らしさを出せている'], ['不安が先にくる', '少しワクワクする'], ['力を出しきれていない感覚', '自然に活かせている感覚']],
+      money: [['不安や制限を感じる', '安心や広がりを感じる'], ['どこか遠慮してしまう', '受け取っていいと感じる'], ['少し話しにくい感覚', '自然に話せる感覚'], ['守ることを優先したくなる', '広げる選択をしたくなる'], ['受け取るのに抵抗がある', '素直に受け取れる']],
+      learning: [['一歩が少し重い感覚', '軽く始められそうな感覚'], ['失敗が気になる', '試すことが楽しみ'], ['準備しないと不安', 'まずやってみたい'], ['結果が気になりすぎる', '過程も楽しめる'], ['やらなきゃという感覚', 'やりたいという感覚']],
+      hobby: [['楽しみを後回しにしている', '楽しみを感じられている'], ['どこか遠慮してしまう', '素直に楽しめる'], ['やるべきことを優先してしまう', '好きな時間も大切にできる'], ['少し罪悪感がある', '安心して楽しめる'], ['ワクワクが眠っている', '今も動いている感覚']],
+      living: [['落ち着かない感覚がある', 'ほっとできる感覚がある'], ['余白が足りない感覚', 'ゆとりを感じられる'], ['整えたい気持ちはある', 'すでに心地よい'], ['安心できる場所が少ない', '安心できる場所がある'], ['どこから整えればいいか迷う', '整えたい場所が見えている']],
+      relation: [['本音を抑えてしまう感覚', '自然に伝えられる感覚'], ['自分で抱えたくなる', '人に頼れる感覚'], ['相手を優先しがち', '自分も大切にできている'], ['お願いや断るのがこわい', '必要な時に伝えられる'], ['距離感に迷う', '心地よい距離がある']]
     };
 
     const categoryReports = {
@@ -326,9 +290,9 @@
     };
 
     function getSkyState(total) {
-      if (total >= 26) return { title: '光が少し見えにくくなっている空の状態', message: 'いくつかの領域で、気持ちの重なりや疲れが出ているようです。無理に晴らそうとしなくても大丈夫です。まずは、いま感じていることをそのまま受け止めるところから、少しずつ空は整っていきます。' };
-      if (total >= 16) return { title: '晴れと雲が重なっている空の状態', message: '前向きな気持ちと、少し立ち止まりたい気持ちが同時にあるようです。このゆらぎは、次の方向を見つけるための自然なサインです。焦らず見つめていくことで、必要な光が少しずつ見えてきます。' };
-      return { title: '光がやわらかく広がっている空の状態', message: '全体的に、今のあなたを支える土台が穏やかに整っています。ここからは、無理に変えるよりも、心地よい感覚を大切にしながら、さらに自分らしい方向へ広げていけそうです。' };
+      if (total >= 26) return { title: '光が少し見えにくくなっている空模様', message: 'いくつかの領域で、気持ちの重なりや疲れが出ているようです。無理に晴らそうとしなくても大丈夫です。まずは、いま感じていることをそのまま受け止めるところから、少しずつ空は整っていきます。' };
+      if (total >= 16) return { title: '晴れと雲が重なっている空模様', message: '前向きな気持ちと、少し立ち止まりたい気持ちが同時にあるようです。このゆらぎは、次の方向を見つけるための自然なサインです。焦らず見つめていくことで、必要な光が少しずつ見えてきます。' };
+      return { title: '光がやわらかく広がっている空模様', message: '全体的に、今のあなたを支える土台が穏やかに整っています。ここからは、無理に変えるよりも、心地よい感覚を大切にしながら、さらに自分らしい方向へ広げていけそうです。' };
     }
 
     function getMoyamoyaLevel(score) {
@@ -385,33 +349,18 @@
       console.assert(categories.length === 8, 'categories should have 8 items');
       console.assert(categories.every(function(c) { return c.questions.length === 5; }), 'each category should have 5 questions');
       console.assert(categories.every(function(c) { return answerChoices[c.id] && answerChoices[c.id].length === 5; }), 'each category should have 5 answer choice pairs');
-      const allNo = new Array(40).fill(0);
-      const allYes = new Array(40).fill(1);
-      console.assert(analyze(allNo).total === 0, 'allNo total should be 0');
-      console.assert(analyze(allYes).total === 40, 'allYes total should be 40');
-      console.assert(scoreToPercent(5) === 100, 'score 5 should be 100%');
+      console.assert(analyze(new Array(40).fill(0)).total === 0, 'allNo total should be 0');
+      console.assert(analyze(new Array(40).fill(1)).total === 40, 'allYes total should be 40');
     }
     runSelfTests();
 
     function LogoMark() {
       const sources = ['./logo.png', 'logo.png', '/logo.png', '/mnt/data/logo.png'];
       const [sourceIndex, setSourceIndex] = useState(0);
-      const src = sources[sourceIndex];
-
       function handleLogoError() {
-        if (sourceIndex < sources.length - 1) {
-          setSourceIndex(sourceIndex + 1);
-        }
+        if (sourceIndex < sources.length - 1) setSourceIndex(sourceIndex + 1);
       }
-
-      return (
-        <img
-          src={src}
-          alt="Happy Life Rainbow Logo"
-          className="w-full h-full object-contain opacity-95"
-          onError={handleLogoError}
-        />
-      );
+      return <img src={sources[sourceIndex]} alt="Happy Life Rainbow Logo" className="w-full h-full object-contain opacity-95" onError={handleLogoError} />;
     }
 
     function CategoryCircleChart({ scored }) {
@@ -442,13 +391,7 @@
             <svg viewBox="0 0 380 380" className="w-full h-auto overflow-visible" aria-label="Inner Rainbow Map">
               <defs>
                 <linearGradient id="rainbowStroke" x1="70" y1="70" x2="310" y2="310" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stopColor="#FF9AA2" />
-                  <stop offset="15%" stopColor="#FFB347" />
-                  <stop offset="30%" stopColor="#FFD93D" />
-                  <stop offset="45%" stopColor="#6BCB77" />
-                  <stop offset="60%" stopColor="#4ECDC4" />
-                  <stop offset="75%" stopColor="#5DADE2" />
-                  <stop offset="100%" stopColor="#C8A2C8" />
+                  <stop offset="0%" stopColor="#FF9AA2" /><stop offset="15%" stopColor="#FFB347" /><stop offset="30%" stopColor="#FFD93D" /><stop offset="45%" stopColor="#6BCB77" /><stop offset="60%" stopColor="#4ECDC4" /><stop offset="75%" stopColor="#5DADE2" /><stop offset="100%" stopColor="#C8A2C8" />
                 </linearGradient>
                 <radialGradient id="softCenter" cx="50%" cy="50%" r="50%">
                   <stop offset="0%" stopColor="rgba(255,255,255,.92)" />
@@ -468,16 +411,7 @@
               {ordered.map(function(cat, i) {
                 const p = point(i, iconR);
                 const dot = point(i, 20 + (cat.score / 5) * radarMaxR);
-                return (
-                  <g key={cat.id}>
-                    <line x1={center} y1={center} x2={p.x} y2={p.y} stroke="#e2e8f0" strokeWidth="1" opacity=".35" />
-                    <circle cx={dot.x} cy={dot.y} r="4" fill={cat.color} opacity=".9" />
-                    <circle cx={p.x} cy={p.y} r="30" fill="rgba(255,255,255,.68)" stroke="rgba(255,255,255,.9)" strokeWidth="1.2" />
-                    <g transform={'translate(' + (p.x - 22) + ',' + (p.y - 22) + ') scale(0.1467)'}>
-                      <IconGlyph id={cat.id} color={cat.color} />
-                    </g>
-                  </g>
-                );
+                return <g key={cat.id}><line x1={center} y1={center} x2={p.x} y2={p.y} stroke="#e2e8f0" strokeWidth="1" opacity=".35" /><circle cx={dot.x} cy={dot.y} r="4" fill={cat.color} opacity=".9" /><circle cx={p.x} cy={p.y} r="30" fill="rgba(255,255,255,.68)" stroke="rgba(255,255,255,.9)" strokeWidth="1.2" /><g transform={'translate(' + (p.x - 22) + ',' + (p.y - 22) + ') scale(0.1467)'}><IconGlyph id={cat.id} color={cat.color} /></g></g>;
               })}
             </svg>
           </div>
@@ -512,22 +446,21 @@
             <div className="absolute top-0 left-0 w-full rainbow-line"></div>
             <div className="pt-5 sm:pt-6">
               <p className="text-[10px] sm:text-xs font-bold tracking-[0.28em] sm:tracking-[0.36em] text-slate-400 uppercase mb-3 sm:mb-4">Happy Life Rainbow™</p>
-              <h1 className="serif text-[1.6rem] sm:text-4xl font-light tracking-[0.06em] leading-tight text-slate-800 mb-3">レインボー<br className="sm:hidden" />バランス</h1>
-              <p className="text-[13px] sm:text-base text-slate-500 leading-loose mb-5 sm:mb-6">8つの視点で心の状態をやさしく見つめるチェック。<br />もやもやは、まだ言葉になっていないサインです。</p>
+              <h1 className="brand-title mb-4 text-[1.7rem] sm:text-5xl">レインボーバランスファインド</h1>
+              <p className="brand-subcopy text-[13px] sm:text-base text-slate-500 leading-loose mb-4 italic">もやもやの奥にある、あなたの虹を見つける</p>
+              <p className="text-[13px] sm:text-base text-slate-500 leading-loose mb-5 sm:mb-6">8つの視点をめぐりながら、今の自分の内側にやさしく気づいていく時間。<br />答えは外ではなく、すでにあなたの中にあります。</p>
             </div>
             <section className="cover-orbit mb-6 sm:mb-8" aria-label="8 categories">
               <div className="absolute inset-[28%] rounded-full border border-white/50 bg-white/20 backdrop-blur-sm"></div>
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-28 h-28 sm:w-44 sm:h-44 rounded-full bg-white/46 border border-white/70 backdrop-blur-xl shadow-sm flex items-center justify-center p-5 sm:p-8">
-                  <LogoMark />
-                </div>
+                <div className="w-28 h-28 sm:w-44 sm:h-44 rounded-full bg-white/46 border border-white/70 backdrop-blur-xl shadow-sm flex items-center justify-center p-5 sm:p-8"><LogoMark /></div>
               </div>
               {categories.map(function(cat, i) {
                 return <div key={cat.id} className="orbit-icon" style={{ '--angle': (i * 45) + 'deg' }} title={cat.jp}><CategoryIcon id={cat.id} color={cat.color} size={40} /></div>;
               })}
             </section>
-            <button onClick={() => setStep('quiz')} className="btn-rainbow text-white font-black rounded-full px-9 sm:px-10 py-4 shadow-lg text-sm sm:text-base w-full sm:w-auto max-w-[280px]">虹をひらく</button>
-            <p className="mt-5 text-xs text-slate-400">答えは正解・不正解ではなく、今の感覚を知るためのものです。</p>
+            <button onClick={() => setStep('quiz')} className="btn-rainbow text-white font-black rounded-full px-9 sm:px-10 py-4 shadow-lg text-sm sm:text-base w-full sm:w-auto max-w-[280px]">虹を見つけにいく</button>
+            <p className="mt-5 text-xs text-slate-400">正解を探す時間ではなく、すでにある感覚に気づくための時間です。</p>
           </main>
         );
       }
@@ -539,13 +472,8 @@
             <header className="mb-8 sm:mb-12 pt-4">
               <div className="flex items-center justify-between gap-4 mb-8">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl theme-card flex items-center justify-center" style={{ borderColor: hexToRgba(currentCat.color, .22), background: 'linear-gradient(180deg,' + hexToRgba(currentCat.color, .08) + ',rgba(255,255,255,.84) 44%)' }}>
-                    <CategoryIcon id={currentCat.id} color={currentCat.color} size={42} />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold tracking-[0.25em] text-slate-400">{currentCat.name}</p>
-                    <h2 className="text-xl sm:text-2xl font-black" style={{ color: currentCat.color }}>{currentCat.jp}</h2>
-                  </div>
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl theme-card flex items-center justify-center" style={{ borderColor: hexToRgba(currentCat.color, .22), background: 'linear-gradient(180deg,' + hexToRgba(currentCat.color, .08) + ',rgba(255,255,255,.84) 44%)' }}><CategoryIcon id={currentCat.id} color={currentCat.color} size={42} /></div>
+                  <div><p className="text-xs font-bold tracking-[0.25em] text-slate-400">{currentCat.name}</p><h2 className="text-xl sm:text-2xl font-black" style={{ color: currentCat.color }}>{currentCat.jp}</h2></div>
                 </div>
                 <p className="text-xs font-bold text-slate-300">{answers.length + 1} / 40</p>
               </div>
@@ -573,25 +501,25 @@
           <div className="absolute top-0 left-0 w-full rainbow-line"></div>
           <header className="text-center mb-10 sm:mb-14 pt-6">
             <p className="text-xs font-bold tracking-[0.32em] text-slate-400 uppercase mb-4">Happy Life Rainbow™</p>
-            <p className="serif text-xl sm:text-2xl text-slate-700 tracking-[0.10em] mb-3">レインボーバランス</p>
+            <p className="serif text-xl sm:text-2xl text-slate-700 tracking-[0.10em] mb-3">レインボーバランスファインド</p>
             <h2 className="text-3xl sm:text-6xl font-light tracking-[0.12em] sm:tracking-[0.16em] text-transparent bg-clip-text bg-gradient-to-r from-pink-300 via-yellow-300 to-sky-300 uppercase">Insight Report</h2>
-            <p className="serif mt-5 text-sm tracking-[0.22em] sm:tracking-[0.28em] text-slate-400 italic">心の空に、いま見えている虹。</p>
+            <p className="serif mt-5 text-sm tracking-[0.16em] sm:tracking-[0.22em] text-slate-400 italic">もやもやの奥に、いま見えてきた虹。</p>
           </header>
 
           <section className="soft-card rounded-[2rem] sm:rounded-[2.5rem] p-5 sm:p-10 mb-8 sm:mb-10 text-center">
-            <p className="text-sm sm:text-base text-slate-600 leading-loose">今回のチェックから、いまのあなたの内側の状態がやさしく浮かび上がってきました。<br />これは、いまのあなたの<strong className="font-black text-slate-700">レインボーバランス</strong>を見つめるためのレポートです。<br className="hidden sm:block" />良い・悪いを判断するものではなく、整えていくヒントを見つけるためのものです。</p>
+            <p className="text-sm sm:text-base text-slate-600 leading-loose">あなたが選んだ感覚から、いまの内側にある虹のかけらが少しずつ見えてきました。<br />これは、いまのあなたの<strong className="font-black text-slate-700">レインボーバランス</strong>をやさしく見つめるための時間です。<br className="hidden sm:block" />良い・悪いを判断するものではなく、すでにある答えに気づいていくためのものです。</p>
           </section>
 
           <CategoryCircleChart scored={insight.scored} />
 
           <section className="soft-card rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-10 mb-8">
-            <p className="text-xs font-bold tracking-[0.25em] text-slate-400 mb-4">いまのあなたの整えポイント</p>
+            <p className="text-xs font-bold tracking-[0.25em] text-slate-400 mb-4">いま見えてきた虹のかけら</p>
             <h3 className="text-2xl sm:text-3xl font-black text-slate-800 mb-5">{insight.totalLabel}</h3>
             <p className="text-slate-600 leading-loose text-sm sm:text-base">{insight.totalMessage}</p>
           </section>
 
           <section className="rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-10 mb-8 sm:mb-10 bg-gradient-to-br from-sky-50/80 via-white/78 to-pink-50/70 border border-white/90 shadow-sm">
-            <p className="text-xs font-bold tracking-[0.25em] text-slate-400 mb-4">いまのあなたの空の状態</p>
+            <p className="text-xs font-bold tracking-[0.25em] text-slate-400 mb-4">いまの心の空模様</p>
             <h3 className="serif text-xl sm:text-3xl text-slate-800 mb-5 leading-relaxed">{insight.skyState.title}</h3>
             <p className="text-slate-600 leading-loose text-sm sm:text-base">{insight.skyState.message}</p>
           </section>
@@ -601,10 +529,7 @@
               const level = getMoyamoyaLevel(cat.score);
               return (
                 <div key={cat.id} className="theme-card rounded-[1.8rem] sm:rounded-[2rem] p-5 sm:p-6" style={{ borderColor: hexToRgba(cat.color, .22), background: 'linear-gradient(180deg,' + hexToRgba(cat.color, .07) + ',rgba(255,255,255,.84) 46%)' }}>
-                  <div className="flex items-center justify-between mb-4">
-                    <CategoryIcon id={cat.id} color={cat.color} size={38} />
-                    <span className="text-xs font-black text-slate-300">0{index + 1}</span>
-                  </div>
+                  <div className="flex items-center justify-between mb-4"><CategoryIcon id={cat.id} color={cat.color} size={38} /><span className="text-xs font-black text-slate-300">0{index + 1}</span></div>
                   <h4 className="font-black text-lg mb-1" style={{ color: cat.color }}>{cat.jp}</h4>
                   <p className="text-xs text-slate-400 mb-3">{cat.layer}</p>
                   <span className={'inline-block text-[10px] font-bold border rounded-full px-3 py-1 mb-4 ' + level.badge}>もやもや指数 {cat.percent}% / {level.label}</span>
@@ -620,13 +545,7 @@
               return (
                 <article key={cat.id} className="theme-card rounded-[1.8rem] sm:rounded-[2.2rem] p-5 sm:p-8" style={{ borderColor: hexToRgba(cat.color, .22), background: 'linear-gradient(180deg,' + hexToRgba(cat.color, .06) + ',rgba(255,255,255,.84) 44%)' }}>
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5">
-                    <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 rounded-2xl bg-white/54 border border-white/70 flex items-center justify-center"><CategoryIcon id={cat.id} color={cat.color} size={34} /></div>
-                      <div>
-                        <p className="text-xs font-bold tracking-[0.24em] text-slate-400">{cat.name}</p>
-                        <h4 className="text-xl font-black" style={{ color: cat.color }}>{cat.jp}</h4>
-                      </div>
-                    </div>
+                    <div className="flex items-center gap-4"><div className="w-14 h-14 rounded-2xl bg-white/54 border border-white/70 flex items-center justify-center"><CategoryIcon id={cat.id} color={cat.color} size={34} /></div><div><p className="text-xs font-bold tracking-[0.24em] text-slate-400">{cat.name}</p><h4 className="text-xl font-black" style={{ color: cat.color }}>{cat.jp}</h4></div></div>
                     <span className={'self-start sm:self-center inline-block text-[11px] font-bold border rounded-full px-3 py-1 ' + level.badge}>もやもや指数 {cat.percent}% / {level.label}</span>
                   </div>
                   <h5 className="serif text-lg sm:text-xl text-slate-800 mb-4">{cat.reportTitle}</h5>
@@ -644,14 +563,14 @@
           </section>
 
           <section className="text-center rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-10 bg-gradient-to-r from-pink-50/70 via-yellow-50/70 to-sky-50/70 border border-white/80 mb-8">
-            <p className="text-xs font-bold tracking-[0.25em] text-slate-400 mb-4">レインボーバランス</p>
-            <p className="serif text-xl sm:text-2xl text-slate-700 leading-loose mb-5">もやもやは、変化の入り口です。</p>
-            <p className="text-sm text-slate-500 leading-loose">いま感じている違和感や揺らぎは、これからの自分にとって大切なヒントになります。<br />これは、いまのあなたのレインボーバランスです。<br />心に虹のかかる毎日を。<br />ここから、あなたのペースで整えていきましょう。</p>
+            <p className="text-xs font-bold tracking-[0.25em] text-slate-400 mb-4">レインボーバランスファインド</p>
+            <p className="serif text-xl sm:text-2xl text-slate-700 leading-loose mb-5">もやもやの奥には、すでにあなたの虹があります。</p>
+            <p className="text-sm text-slate-500 leading-loose">いま感じている違和感や揺らぎは、あなたの内側にある大切なサインです。<br />答えは外から与えられるものではなく、少しずつ見えてくるもの。<br />心に虹のかかる毎日を。<br />ここから、あなたのペースで見つけていきましょう。</p>
           </section>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <button onClick={reset} className="py-4 rounded-full bg-white/72 hover:bg-white border border-white text-slate-500 font-bold transition-all">もう一度チェックする</button>
-            <a href={bookingUrl} className="btn-rainbow text-center py-4 rounded-full text-white font-black shadow-lg">無料セッションへ進む</a>
+            <button onClick={reset} className="py-4 rounded-full bg-white/72 hover:bg-white border border-white text-slate-500 font-bold transition-all">もう一度見つけにいく</button>
+            <a href={bookingUrl} className="btn-rainbow text-center py-4 rounded-full text-white font-black shadow-lg">一緒に虹を見つける</a>
           </div>
         </main>
       );
