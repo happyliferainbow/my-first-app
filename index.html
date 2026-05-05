@@ -54,15 +54,12 @@
       box-shadow: 0 34px 82px rgba(31,41,55,.075);
     }
 
-    .serif {
-      font-family: 'Noto Serif JP', serif;
-      font-weight: 600;
-    }
+    .serif { font-family: 'Noto Serif JP', serif; font-weight: 600; }
 
     .brand-title {
       font-family: 'Noto Sans JP', sans-serif;
       font-weight: 300;
-      letter-spacing: .055em;
+      letter-spacing: .04em;
       line-height: 1.12;
       white-space: nowrap;
       color: transparent;
@@ -179,8 +176,8 @@
     @media (max-width: 520px) {
       body { align-items: flex-start; padding: 12px !important; }
       .glass-card { border-radius: 2rem !important; }
-      .brand-title { font-size: 1.35rem; letter-spacing: .015em; }
-      .cover-orbit { width: min(82vw, 310px); height: min(82vw, 310px); margin-bottom: 1.5rem; }
+      .brand-title { font-size: 1.55rem; letter-spacing: .02em; }
+      .cover-orbit { width: min(82vw, 310px); height: min(82vw, 310px); margin-bottom: 2rem; }
       .orbit-icon {
         transform: translate(-50%, -50%) rotate(var(--angle)) translateY(-116px) rotate(calc(-1 * var(--angle)));
         width: 52px;
@@ -191,7 +188,7 @@
     }
 
     @media (max-width: 380px) {
-      .brand-title { font-size: 1.18rem; }
+      .brand-title { font-size: 1.42rem; letter-spacing: .01em; }
       .cover-orbit { width: 290px; height: 290px; }
       .orbit-icon {
         transform: translate(-50%, -50%) rotate(var(--angle)) translateY(-106px) rotate(calc(-1 * var(--angle)));
@@ -253,7 +250,13 @@
     }
 
     function CategoryIcon({ id, color, size = 44 }) {
-      return <span className="hlr-icon inline-flex items-center justify-center"><svg viewBox="0 0 300 300" width={size} height={size} role="img" aria-label={id + ' icon'}><IconGlyph id={id} color={color} /></svg></span>;
+      return (
+        <span className="hlr-icon inline-flex items-center justify-center">
+          <svg viewBox="0 0 300 300" width={size} height={size} role="img" aria-label={id + ' icon'}>
+            <IconGlyph id={id} color={color} />
+          </svg>
+        </span>
+      );
     }
 
     const categories = [
@@ -351,16 +354,16 @@
       console.assert(categories.every(function(c) { return answerChoices[c.id] && answerChoices[c.id].length === 5; }), 'each category should have 5 answer choice pairs');
       console.assert(analyze(new Array(40).fill(0)).total === 0, 'allNo total should be 0');
       console.assert(analyze(new Array(40).fill(1)).total === 40, 'allYes total should be 40');
+      console.assert(scoreToPercent(5) === 100, 'score 5 should be 100%');
     }
     runSelfTests();
 
     function LogoMark() {
       const sources = ['./logo.png', 'logo.png', '/logo.png', '/mnt/data/logo.png'];
       const [sourceIndex, setSourceIndex] = useState(0);
-      function handleLogoError() {
-        if (sourceIndex < sources.length - 1) setSourceIndex(sourceIndex + 1);
-      }
-      return <img src={sources[sourceIndex]} alt="Happy Life Rainbow Logo" className="w-full h-full object-contain opacity-95" onError={handleLogoError} />;
+      const src = sources[sourceIndex];
+      function handleLogoError() { if (sourceIndex < sources.length - 1) setSourceIndex(sourceIndex + 1); }
+      return <img src={src} alt="Happy Life Rainbow Logo" className="w-full h-full object-contain opacity-95" onError={handleLogoError} />;
     }
 
     function CategoryCircleChart({ scored }) {
@@ -391,7 +394,13 @@
             <svg viewBox="0 0 380 380" className="w-full h-auto overflow-visible" aria-label="Inner Rainbow Map">
               <defs>
                 <linearGradient id="rainbowStroke" x1="70" y1="70" x2="310" y2="310" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stopColor="#FF9AA2" /><stop offset="15%" stopColor="#FFB347" /><stop offset="30%" stopColor="#FFD93D" /><stop offset="45%" stopColor="#6BCB77" /><stop offset="60%" stopColor="#4ECDC4" /><stop offset="75%" stopColor="#5DADE2" /><stop offset="100%" stopColor="#C8A2C8" />
+                  <stop offset="0%" stopColor="#FF9AA2" />
+                  <stop offset="15%" stopColor="#FFB347" />
+                  <stop offset="30%" stopColor="#FFD93D" />
+                  <stop offset="45%" stopColor="#6BCB77" />
+                  <stop offset="60%" stopColor="#4ECDC4" />
+                  <stop offset="75%" stopColor="#5DADE2" />
+                  <stop offset="100%" stopColor="#C8A2C8" />
                 </linearGradient>
                 <radialGradient id="softCenter" cx="50%" cy="50%" r="50%">
                   <stop offset="0%" stopColor="rgba(255,255,255,.92)" />
@@ -411,7 +420,16 @@
               {ordered.map(function(cat, i) {
                 const p = point(i, iconR);
                 const dot = point(i, 20 + (cat.score / 5) * radarMaxR);
-                return <g key={cat.id}><line x1={center} y1={center} x2={p.x} y2={p.y} stroke="#e2e8f0" strokeWidth="1" opacity=".35" /><circle cx={dot.x} cy={dot.y} r="4" fill={cat.color} opacity=".9" /><circle cx={p.x} cy={p.y} r="30" fill="rgba(255,255,255,.68)" stroke="rgba(255,255,255,.9)" strokeWidth="1.2" /><g transform={'translate(' + (p.x - 22) + ',' + (p.y - 22) + ') scale(0.1467)'}><IconGlyph id={cat.id} color={cat.color} /></g></g>;
+                return (
+                  <g key={cat.id}>
+                    <line x1={center} y1={center} x2={p.x} y2={p.y} stroke="#e2e8f0" strokeWidth="1" opacity=".35" />
+                    <circle cx={dot.x} cy={dot.y} r="4" fill={cat.color} opacity=".9" />
+                    <circle cx={p.x} cy={p.y} r="30" fill="rgba(255,255,255,.68)" stroke="rgba(255,255,255,.9)" strokeWidth="1.2" />
+                    <g transform={'translate(' + (p.x - 22) + ',' + (p.y - 22) + ') scale(0.1467)'}>
+                      <IconGlyph id={cat.id} color={cat.color} />
+                    </g>
+                  </g>
+                );
               })}
             </svg>
           </div>
@@ -444,16 +462,18 @@
         return (
           <main className="glass-card rounded-[2rem] sm:rounded-[3rem] p-5 sm:p-12 text-center text-reveal relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full rainbow-line"></div>
-            <div className="pt-5 sm:pt-6">
-              <p className="text-[10px] sm:text-xs font-bold tracking-[0.28em] sm:tracking-[0.36em] text-slate-400 uppercase mb-3 sm:mb-4">Happy Life Rainbow™</p>
-              <h1 className="brand-title mb-4 text-[1.7rem] sm:text-5xl">レインボーバランスファインド</h1>
+            <div className="pt-7 sm:pt-10 pb-1">
+              <p className="text-[10px] sm:text-xs font-bold tracking-[0.28em] sm:tracking-[0.36em] text-slate-400 uppercase mb-4 sm:mb-6">Happy Life Rainbow™</p>
+              <h1 className="brand-title text-[1.55rem] sm:text-5xl mb-5 sm:mb-6">レインボーバランスファインド</h1>
               <p className="brand-subcopy text-[13px] sm:text-base text-slate-500 leading-loose mb-4 italic">もやもやの奥にある、あなたの虹を見つける</p>
-              <p className="text-[13px] sm:text-base text-slate-500 leading-loose mb-5 sm:mb-6">8つの視点をめぐりながら、今の自分の内側にやさしく気づいていく時間。<br />答えは外ではなく、すでにあなたの中にあります。</p>
+              <p className="text-[13px] sm:text-base text-slate-500 leading-loose mb-6 sm:mb-8">8つの視点をめぐりながら、今の自分の内側にやさしく気づいていく時間。<br />答えは外ではなく、すでにあなたの中にあります。</p>
             </div>
-            <section className="cover-orbit mb-6 sm:mb-8" aria-label="8 categories">
+            <section className="cover-orbit mb-8 sm:mb-10" aria-label="8 categories">
               <div className="absolute inset-[28%] rounded-full border border-white/50 bg-white/20 backdrop-blur-sm"></div>
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-28 h-28 sm:w-44 sm:h-44 rounded-full bg-white/46 border border-white/70 backdrop-blur-xl shadow-sm flex items-center justify-center p-5 sm:p-8"><LogoMark /></div>
+                <div className="w-28 h-28 sm:w-44 sm:h-44 rounded-full bg-white/46 border border-white/70 backdrop-blur-xl shadow-sm flex items-center justify-center p-5 sm:p-8">
+                  <LogoMark />
+                </div>
               </div>
               {categories.map(function(cat, i) {
                 return <div key={cat.id} className="orbit-icon" style={{ '--angle': (i * 45) + 'deg' }} title={cat.jp}><CategoryIcon id={cat.id} color={cat.color} size={40} /></div>;
@@ -472,8 +492,13 @@
             <header className="mb-8 sm:mb-12 pt-4">
               <div className="flex items-center justify-between gap-4 mb-8">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl theme-card flex items-center justify-center" style={{ borderColor: hexToRgba(currentCat.color, .22), background: 'linear-gradient(180deg,' + hexToRgba(currentCat.color, .08) + ',rgba(255,255,255,.84) 44%)' }}><CategoryIcon id={currentCat.id} color={currentCat.color} size={42} /></div>
-                  <div><p className="text-xs font-bold tracking-[0.25em] text-slate-400">{currentCat.name}</p><h2 className="text-xl sm:text-2xl font-black" style={{ color: currentCat.color }}>{currentCat.jp}</h2></div>
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl theme-card flex items-center justify-center" style={{ borderColor: hexToRgba(currentCat.color, .22), background: 'linear-gradient(180deg,' + hexToRgba(currentCat.color, .08) + ',rgba(255,255,255,.84) 44%)' }}>
+                    <CategoryIcon id={currentCat.id} color={currentCat.color} size={42} />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold tracking-[0.25em] text-slate-400">{currentCat.name}</p>
+                    <h2 className="text-xl sm:text-2xl font-black" style={{ color: currentCat.color }}>{currentCat.jp}</h2>
+                  </div>
                 </div>
                 <p className="text-xs font-bold text-slate-300">{answers.length + 1} / 40</p>
               </div>
@@ -529,7 +554,10 @@
               const level = getMoyamoyaLevel(cat.score);
               return (
                 <div key={cat.id} className="theme-card rounded-[1.8rem] sm:rounded-[2rem] p-5 sm:p-6" style={{ borderColor: hexToRgba(cat.color, .22), background: 'linear-gradient(180deg,' + hexToRgba(cat.color, .07) + ',rgba(255,255,255,.84) 46%)' }}>
-                  <div className="flex items-center justify-between mb-4"><CategoryIcon id={cat.id} color={cat.color} size={38} /><span className="text-xs font-black text-slate-300">0{index + 1}</span></div>
+                  <div className="flex items-center justify-between mb-4">
+                    <CategoryIcon id={cat.id} color={cat.color} size={38} />
+                    <span className="text-xs font-black text-slate-300">0{index + 1}</span>
+                  </div>
                   <h4 className="font-black text-lg mb-1" style={{ color: cat.color }}>{cat.jp}</h4>
                   <p className="text-xs text-slate-400 mb-3">{cat.layer}</p>
                   <span className={'inline-block text-[10px] font-bold border rounded-full px-3 py-1 mb-4 ' + level.badge}>もやもや指数 {cat.percent}% / {level.label}</span>
@@ -545,7 +573,13 @@
               return (
                 <article key={cat.id} className="theme-card rounded-[1.8rem] sm:rounded-[2.2rem] p-5 sm:p-8" style={{ borderColor: hexToRgba(cat.color, .22), background: 'linear-gradient(180deg,' + hexToRgba(cat.color, .06) + ',rgba(255,255,255,.84) 44%)' }}>
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5">
-                    <div className="flex items-center gap-4"><div className="w-14 h-14 rounded-2xl bg-white/54 border border-white/70 flex items-center justify-center"><CategoryIcon id={cat.id} color={cat.color} size={34} /></div><div><p className="text-xs font-bold tracking-[0.24em] text-slate-400">{cat.name}</p><h4 className="text-xl font-black" style={{ color: cat.color }}>{cat.jp}</h4></div></div>
+                    <div className="flex items-center gap-4">
+                      <div className="w-14 h-14 rounded-2xl bg-white/54 border border-white/70 flex items-center justify-center"><CategoryIcon id={cat.id} color={cat.color} size={34} /></div>
+                      <div>
+                        <p className="text-xs font-bold tracking-[0.24em] text-slate-400">{cat.name}</p>
+                        <h4 className="text-xl font-black" style={{ color: cat.color }}>{cat.jp}</h4>
+                      </div>
+                    </div>
                     <span className={'self-start sm:self-center inline-block text-[11px] font-bold border rounded-full px-3 py-1 ' + level.badge}>もやもや指数 {cat.percent}% / {level.label}</span>
                   </div>
                   <h5 className="serif text-lg sm:text-xl text-slate-800 mb-4">{cat.reportTitle}</h5>
@@ -566,6 +600,9 @@
             <p className="text-xs font-bold tracking-[0.25em] text-slate-400 mb-4">レインボーバランスファインド</p>
             <p className="serif text-xl sm:text-2xl text-slate-700 leading-loose mb-5">もやもやの奥には、すでにあなたの虹があります。</p>
             <p className="text-sm text-slate-500 leading-loose">いま感じている違和感や揺らぎは、あなたの内側にある大切なサインです。<br />答えは外から与えられるものではなく、少しずつ見えてくるもの。<br />心に虹のかかる毎日を。<br />ここから、あなたのペースで見つけていきましょう。</p>
+            <div className="mt-10 pt-6 border-t border-white/60">
+              <p className="serif text-lg sm:text-xl text-slate-600 italic text-center">この虹は、これからどう広がっていきそうですか？</p>
+            </div>
           </section>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
