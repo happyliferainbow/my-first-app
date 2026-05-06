@@ -228,9 +228,7 @@
       var box = document.getElementById('runtime-error');
       if (box) {
         box.style.display = 'block';
-        box.textContent = 'エラーが発生しました。
-' + message + '
-line: ' + lineno + ', column: ' + colno;
+        box.textContent = 'エラーが発生しました。\n' + message + '\nline: ' + lineno + ', column: ' + colno;
       }
       return false;
     };
@@ -378,9 +376,9 @@ line: ' + lineno + ', column: ' + colno;
       const clarityScore = 5 - score;
       const clarityPercent = scoreToClarityPercent(score);
       const wobblePercent = scoreToWobblePercent(score);
-      if (score >= 5) return { label: '深いゆらぎ', clarityLabel: '光を探している状態', tone: 'いまは、この領域に言葉になる前の想いや疲れが集まっています。無理に答えを出すより、まず「何が苦しいのか」「本当はどうしたいのか」を分けて見ることが大切です。', badge: 'bg-rose-50 text-rose-500 border-rose-100', clarityScore, clarityPercent, wobblePercent };
-      if (score >= 4) return { label: 'やや濃いゆらぎ', clarityLabel: '整える余白がある状態', tone: 'この領域では、気づかないうちに力が入りすぎている可能性があります。頑張りが足りないのではなく、心の使い方や優先順位を少し見直すサインです。', badge: 'bg-pink-50 text-pink-500 border-pink-100', clarityScore, clarityPercent, wobblePercent };
-      if (score >= 3) return { label: '小さなゆらぎ', clarityLabel: '気づきが生まれ始めた状態', tone: '小さな違和感が、そろそろ言葉にしてほしいサインとして現れています。今のうちに整えることで、未来の選択が軽くなりやすい領域です。', badge: 'bg-amber-50 text-amber-600 border-amber-100', clarityScore, clarityPercent, wobblePercent };
+      if (score >= 5) return { label: '深いもやもや', clarityLabel: '光を探している状態', tone: 'いまは、この領域に言葉になる前の想いや疲れが集まっています。無理に答えを出すより、まず「何がもやもやしているのか」「本当はどうしたいのか」を分けて見ることが大切です。', badge: 'bg-rose-50 text-rose-500 border-rose-100', clarityScore, clarityPercent, wobblePercent };
+      if (score >= 4) return { label: 'やや濃いもやもや', clarityLabel: '整える余白がある状態', tone: 'この領域では、気づかないうちに力が入りすぎている可能性があります。頑張りが足りないのではなく、もやもやに気づき少し見直すサインです。', badge: 'bg-pink-50 text-pink-500 border-pink-100', clarityScore, clarityPercent, wobblePercent };
+      if (score >= 3) return { label: '小さなもやもや', clarityLabel: '気づきが生まれ始めた状態', tone: '小さな違和感やもやもやが、そろそろ言葉にしてほしいサインとして現れています。今のうちに整えることで、未来の選択が軽くなりやすい領域です。', badge: 'bg-amber-50 text-amber-600 border-amber-100', clarityScore, clarityPercent, wobblePercent };
       if (score >= 1) return { label: 'ほぼクリア', clarityLabel: '軽やかに使えている状態', tone: '大きな詰まりは少なく、この領域は日常の中で比較的自然に使えています。さらに整えるなら、今すでにできていることを意識的に育てるのがおすすめです。', badge: 'bg-sky-50 text-sky-500 border-sky-100', clarityScore, clarityPercent, wobblePercent };
       return { label: 'とてもクリア', clarityLabel: '安定した光として働いている状態', tone: 'この領域は、今のあなたを支える安定した光として働いています。ここにある安心感や強みは、他の領域を整える土台にもなります。', badge: 'bg-emerald-50 text-emerald-500 border-emerald-100', clarityScore, clarityPercent, wobblePercent };
     }
@@ -406,9 +404,29 @@ line: ' + lineno + ', column: ' + colno;
         return cat.jp + 'の領域には、いま濃いサインが出ています。これは弱さではなく、あなたが本当は大切にしたいものが見え始めている合図です。' + level.tone;
       }
       if (cat.score >= 2) {
-        return cat.jp + 'の領域には、小さなゆらぎと同時に、整え直せる余白があります。今すぐ大きく変える必要はありません。気づいた違和感を一つずつ言葉にすることで、次の選択が軽くなります。';
+        const middleReports = {
+        mental: '考えすぎや自己否定が少し強くなりやすい状態です。本音より「ちゃんとしなきゃ」が先に出ている可能性があります。',
+        health: '疲れや我慢が積み重なり、体のサインを後回しにしやすい状態です。まずは休む感覚を取り戻すことが大切です。',
+        work: '頑張っているのに、やりがいや納得感が薄れやすい状態です。今の働き方に小さな違和感が出始めています。',
+        money: '将来への不安や不足感が出やすく、お金に安心感を持ちにくい状態です。',
+        learning: '学びたい気持ちはあるのに、自信や時間の問題で止まりやすい状態です。',
+        hobby: '楽しむことを後回しにしやすく、気づかないうちに心の余白が減っている状態です。',
+        living: '暮らしや環境の乱れが、気持ちの落ち着きにも影響しやすい状態です。',
+        relation: '周りに合わせすぎて、自分の気持ちを我慢しやすい状態です。'
+      };
+      return middleReports[cat.id];
       }
-      return cat.jp + 'の領域は、今のあなたを支える比較的クリアな光として働いています。この安定感は、他の揺らぎを整えるときの安心できる土台になります。';
+      const stableReports = {
+        mental: '自分の考えや感覚を、比較的落ち着いて使えている状態です。',
+        health: '生活リズムや体調のバランスを、比較的安定して保てています。',
+        work: '仕事や役割に対して、大きな迷いは少ない状態です。',
+        money: 'お金に対する不安が比較的少なく、現実的に向き合えています。',
+        learning: '新しいことへの興味や学ぶ意欲を保てています。',
+        hobby: '好きなことや気分転換を、比較的うまく取り入れられています。',
+        living: '暮らしや生活環境を、自分なりに整えられている状態です。',
+        relation: '人との距離感を比較的自然に保てています。'
+      };
+      return stableReports[cat.id];
     }
 
     function normalizePair(a, b) {
@@ -417,7 +435,7 @@ line: ' + lineno + ', column: ' + colno;
     }
 
     function getSkyState(total) {
-      if (total >= 26) return { title: '虹の前の、やさしい通り雨。', message: 'いくつかの領域に濃いゆらぎが出ているときは、人生が止まっているのではなく、これまでの価値観が新しい形へほどけ始めている時期です。今は急いで晴れにしようとせず、雨音の中にある本音を聞くことが大切です。' };
+      if (total >= 26) return { title: '虹の前の、やさしい通り雨。', message: 'いくつかの領域に濃いもやもやが出ているときは、人生が止まっているのではなく、これまでの価値観が新しい形へほどけ始めている時期です。今は急いで晴れにしようとせず、雨音の中にある本音を聞くことが大切です。' };
       if (total >= 16) return { title: '雲のすき間から、光の方向が見え始めています。', message: '小さな違和感は、あなたを責めるものではなく、未来の選び方を教えてくれるサインです。ひとつ整えると、隣のカテゴリーにもやさしい光が広がっていきます。' };
       return { title: '穏やかな空に、次の虹をかける準備ができています。', message: '全体は比較的安定しています。ここからは守るだけでなく、好きなこと・挑戦したいこと・大切な人とのつながりへ、光を少しずつ広げていくタイミングです。' };
     }
@@ -453,14 +471,14 @@ line: ' + lineno + ', column: ' + colno;
       const skyState = getSkyState(total);
 
       let totalLabel = '小さな違和感を、やさしく言葉にすること';
-      let totalMessage = '全体として大きく崩れているというより、いくつかの領域に小さなゆらぎが出始めている状態です。今のうちに丁寧に言語化すると、未来の選択が軽くなります。詩的に言えば、虹の色が一度に混ざって見えている状態。解説すると、本当は大切にしたい価値観が、日常の中で少しだけ見えにくくなっているということです。';
+      let totalMessage = '全体として大きく崩れているというより、いくつかの領域に小さなもやもやが出始めている状態です。今のうちに丁寧に言語化すると、未来の選択が軽くなります。詩的に言えば、虹の色が一度に混ざって見えている状態。解説すると、本当は大切にしたい価値観が、日常の中で少しだけ見えにくくなっているということです。';
 
       if (total >= 26) {
         totalLabel = '心の奥にある願いを、もう一度組み直すこと';
         totalMessage = '複数のカテゴリーに、今のあなたからの大切なサインが出ています。これは悪い結果ではなく、これまで頑張ってきた自分を一度ゆっくり見つめ直すタイミングです。詩的に言えば、雨上がりの前に空が深く色づいている状態。解説すると、今までの頑張り方・守り方・選び方を、これからの自分に合う形へ更新する必要があるということです。';
       } else if (total >= 16) {
         totalLabel = '小さな違和感を言葉にして、流れを整えること';
-        totalMessage = 'いくつかの領域で、エネルギーのゆらぎが見えています。大きく変えようとしなくても大丈夫です。まずは小さな違和感を言葉にすることから始めると、隣り合うカテゴリーにもやさしい連鎖が広がっていきます。詩的に言えば、雲の切れ間から光の筋が差し込む状態。解説すると、すでに気づきは始まっていて、あとは具体的な一歩へ変える段階です。';
+        totalMessage = 'いくつかの領域で、エネルギーのもやもやが見えています。大きく変えようとしなくても大丈夫です。まずは小さな違和感を言葉にすることから始めると、隣り合うカテゴリーにもやさしい連鎖が広がっていきます。詩的に言えば、雲の切れ間から光の筋が差し込む状態。解説すると、すでに気づきは始まっていて、あとは具体的な一歩へ変える段階です。';
       } else if (total <= 7) {
         totalLabel = '安定した虹を、未来へ軽やかに広げること';
         totalMessage = '全体のバランスは比較的クリアで、今のあなたを支える土台が整っています。ここからは整えるだけでなく、理想のビジョンに向けて、好き・挑戦・つながりを少しずつ広げていくフェーズです。詩的に言えば、澄んだ空に次の虹を描ける状態。解説すると、現状維持よりも「どんな未来へ広げたいか」を考えると可能性が開きやすい時期です。';
@@ -522,7 +540,7 @@ line: ' + lineno + ', column: ' + colno;
         <div className="mb-10">
           <div className="text-center mb-6">
             <p className="text-xs font-bold text-slate-400 tracking-[0.25em] mb-3">INNER RAINBOW MAP</p>
-            <p className="text-sm text-slate-500 leading-relaxed">外側へ広がるほど、いまクリアに使えている力。内側に寄るほど、やさしく整えたい“ゆらぎ”のサインです。</p>
+            <p className="text-sm text-slate-500 leading-relaxed">外側へ広がるほど、今のあなたが自然に使えている力。内側に近いほど、疲れや迷いが出ている領域です。</p>
           </div>
           <div className="relative w-full max-w-[430px] mx-auto">
             <svg viewBox="0 0 380 380" className="w-full h-auto overflow-visible" aria-label="Inner Rainbow Map">
@@ -555,7 +573,7 @@ line: ' + lineno + ', column: ' + colno;
             </svg>
           </div>
           <div className="mt-8 bg-white/60 border border-white rounded-2xl p-4 text-center">
-            <p className="text-xs text-slate-500 leading-relaxed">このマップでは、外側に広がるほど「クリアに使えている力」が大きく表示されます。ゆらぎが強い領域は内側に現れ、深掘りレポートで優先的に整えるテーマとして表示されます。</p>
+            <p className="text-xs text-slate-500 leading-relaxed">このマップでは、外側に広がるほど「クリアに使えている力」が大きく表示されます。もやもやが強い領域は内側に現れ、深掘りレポートで優先的に整えるテーマとして表示されます。</p>
           </div>
         </div>
       );
@@ -587,7 +605,7 @@ line: ' + lineno + ', column: ' + colno;
         <>
           <div className="flex flex-wrap gap-2 mb-5">
             <span className={'inline-block text-[11px] font-bold border rounded-full px-3 py-1 ' + level.badge}>クリア度 {level.clarityPercent}% / {level.clarityLabel}</span>
-            <span className="inline-block text-[11px] font-bold border rounded-full px-3 py-1 bg-white/70 text-slate-400 border-white">ゆらぎ {level.wobblePercent}% / {level.label}</span>
+            <span className="inline-block text-[11px] font-bold border rounded-full px-3 py-1 bg-white/70 text-slate-400 border-white">もやもや {level.wobblePercent}% / {level.label}</span>
           </div>
           <h5 className="serif text-lg sm:text-xl text-slate-800 mb-3">{cat.reportTitle}</h5>
           <p className="text-sm sm:text-base text-slate-600 leading-loose mb-4">{getPersonalCategoryReport(cat)}</p>
@@ -644,11 +662,11 @@ line: ' + lineno + ', column: ' + colno;
             <div className="mx-auto w-24 h-24 mb-5"><LogoMark /></div>
             <p className="text-xs font-bold text-slate-400 tracking-[0.30em] mb-3">レインボーバランスファインド</p>
             <h2 className="text-3xl sm:text-6xl font-light tracking-[0.12em] sm:tracking-[0.16em] text-transparent bg-clip-text bg-gradient-to-r from-pink-300 via-yellow-300 to-sky-300 uppercase">Insight Report</h2>
-            <p className="serif mt-5 text-sm tracking-[0.16em] sm:tracking-[0.22em] text-slate-400 italic">ゆらぎの奥に、いま見えてきた虹。</p>
+            <p className="serif mt-5 text-sm tracking-[0.16em] sm:tracking-[0.22em] text-slate-400 italic">もやもやの奥に、いま見えてきた虹。</p>
           </header>
 
           <section className="soft-card rounded-[2rem] sm:rounded-[2.5rem] p-5 sm:p-10 mb-8 sm:mb-10 text-center">
-            <p className="text-sm sm:text-base text-slate-600 leading-loose">あなたが選んだ感覚から、いまの内側にある虹のかけらが少しずつ見えてきました。<br />このレポートでは、<strong className="font-black text-slate-700">外側に広がるほどクリアに使えている力</strong>、内側に寄るほど整えたいゆらぎとして表示しています。<br className="hidden sm:block" />良い・悪いを判断するものではなく、すでにある答えに気づいていくためのものです。</p>
+            <p className="text-sm sm:text-base text-slate-600 leading-loose">あなたが選んだ感覚から、いまの内側にある虹のかけらが少しずつ見えてきました。<br />このレポートでは、<strong className="font-black text-slate-700">外側に広がるほど自然に使えている力</strong>、内側に近いほど今のあなたが迷いや負担を感じやすい領域として表示しています。<br className="hidden sm:block" />良い・悪いを判断するものではなく、すでにある答えに気づいていくためのものです。</p>
           </section>
 
           <CategoryCircleChart scored={insight.scored} />
@@ -671,7 +689,7 @@ line: ' + lineno + ', column: ' + colno;
               return (
                 <div key={cat.id} className="theme-card rounded-[1.8rem] sm:rounded-[2rem] p-5 sm:p-6" style={{ borderColor: hexToRgba(cat.color, .22), background: 'linear-gradient(180deg, ' + hexToRgba(cat.color, .12) + ', rgba(255,255,255,.78))' }}>
                   <div className="flex items-center gap-3 mb-4"><CategoryIcon id={cat.id} color={cat.color} /><div><p className="text-[10px] font-black tracking-[0.18em] text-slate-400">FOCUS {index + 1}</p><h4 className="font-black text-slate-800">{cat.jp}</h4></div></div>
-                  <p className="text-xs font-bold text-slate-400 mb-2">クリア度 {level.clarityPercent}% / ゆらぎ {level.wobblePercent}%</p>
+                  <p className="text-xs font-bold text-slate-400 mb-2">クリア度 {level.clarityPercent}% / もやもや {level.wobblePercent}%</p>
                   <p className="text-sm text-slate-600 leading-relaxed">{level.tone}</p>
                 </div>
               );
@@ -681,7 +699,7 @@ line: ' + lineno + ', column: ' + colno;
           <section className="soft-card rounded-[2rem] sm:rounded-[2.5rem] p-6 sm:p-10 mb-8">
             <p className="text-xs font-bold tracking-[0.25em] text-slate-400 mb-4">対面テーマ</p>
             <h3 className="text-2xl sm:text-3xl font-black text-slate-800 mb-5">{insight.pairTheme}</h3>
-            <p className="text-sm sm:text-base text-slate-600 leading-loose">いちばんゆらぎが出た <strong>{insight.top.jp}</strong> と、向かい合う <strong>{insight.opposite.jp}</strong> は、あなたの内側でバランスを取り合う大切なテーマです。片方だけを整えるのではなく、両方の声を聞くことで、心の虹はより自然な形に戻っていきます。</p>
+            <p className="text-sm sm:text-base text-slate-600 leading-loose">いちばんもやもやが出た <strong>{insight.top.jp}</strong> と、向かい合う <strong>{insight.opposite.jp}</strong> は、あなたの内側でバランスを取り合う大切なテーマです。片方だけを整えるのではなく、両方の声を聞くことで、心の虹はより自然な形に戻っていきます。</p>
           </section>
 
           <section className="space-y-5 mb-10">
@@ -729,7 +747,7 @@ line: ' + lineno + ', column: ' + colno;
             <TopCircle />
             <section className="soft-card rounded-[2rem] p-5 sm:p-7 mb-7 text-left">
               <div className="rainbow-line mb-5"></div>
-              <p className="text-sm sm:text-base text-slate-600 leading-loose">40の問いに直感で答えてください。結果では、強みとして使えているクリアな力と、やさしく整えたいゆらぎを分けて表示します。外側へ広がるチャートは、あなたの中でクリアに輝いている部分です。</p>
+              <p className="text-sm sm:text-base text-slate-600 leading-loose">40の問いに直感で答えてください。結果では、今のあなたが自然に使えている強みと、負担や迷いが出やすい部分を分けて表示します。外側へ広がるチャートは、あなたの中でクリアに輝いている部分です。</p>
             </section>
             <button type="button" onClick={function() { setStarted(true); }} className="btn-rainbow rounded-full px-9 py-4 text-white text-sm font-black shadow-sm">虹を見つけにいく</button>
           </main>
